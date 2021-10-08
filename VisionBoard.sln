@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisionBoard", "VisionBoard\VisionBoard.csproj", "{2D62D1FD-D1C3-43D2-9496-D19C45845789}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D62D1FD-D1C3-43D2-9496-D19C45845789}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D62D1FD-D1C3-43D2-9496-D19C45845789}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D62D1FD-D1C3-43D2-9496-D19C45845789}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D62D1FD-D1C3-43D2-9496-D19C45845789}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {82D4F817-FDBF-40C5-AD86-25F266E3BCE0}
+	EndGlobalSection
+EndGlobal
