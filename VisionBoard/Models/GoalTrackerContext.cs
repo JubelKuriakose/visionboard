@@ -10,10 +10,6 @@ namespace VisionBoard.Models
 {
     public partial class GoalTrackerContext : DbContext
     {
-        public GoalTrackerContext()
-        {
-        }
-
         public GoalTrackerContext(DbContextOptions<GoalTrackerContext> options)
             : base(options)
         {
@@ -30,7 +26,7 @@ namespace VisionBoard.Models
             if (!optionsBuilder.IsConfigured)
             {
                 var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appSettings.json").Build();
-                string connectionString = builder.GetSection("ConnectionStrings").GetSection("VisionBoardConnection").Value.ToString();
+                string connectionString = builder.GetSection("ConnectionStrings").GetSection("GoalTrackerConnection").Value.ToString();
                 optionsBuilder.UseSqlServer(connectionString);                
             }
         }
