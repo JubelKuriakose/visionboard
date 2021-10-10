@@ -6,7 +6,7 @@ namespace VisionBoard.DAL
 {
     public interface IGoalRepository
     {
-        IEnumerable<Goal> GetAllGoals();
+        Task<IEnumerable<Goal>> GetAllGoals();
 
         Task<Goal> GetGoal(int goalId);
 
@@ -16,7 +16,7 @@ namespace VisionBoard.DAL
 
         Task<Goal> DeleteGoal(int goalId);
 
-        bool IsGoalExist(int GoalId);
+        Task<bool> IsGoalExist(int GoalId);
 
     }
 }

@@ -6,7 +6,7 @@ namespace VisionBoard.DAL
 {
     public interface IRewardRepository
     {
-        IEnumerable<Reward> GetAllRewards();
+        Task<IEnumerable<Reward>> GetAllRewards();
 
         Task<Reward> GetReward(int rewardId);
 

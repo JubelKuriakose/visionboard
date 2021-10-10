@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace VisionBoard.DAL
 {
@@ -32,9 +33,9 @@ namespace VisionBoard.DAL
             return tag;
         }
 
-        public IEnumerable<Tag> GetAllTags()
+        public async Task<IEnumerable<Tag>> GetAllTags()
         {
-            return dBContext.Tags;
+            return await dBContext.Tags.ToListAsync();
         }
 
         public async Task<Tag> GetTag(int tagId)
@@ -50,9 +51,9 @@ namespace VisionBoard.DAL
             return tags;
         }
 
-        public bool IsTagExist(int tagId)
+        public async Task<bool> IsTagExist(int tagId)
         {
-            return dBContext.Tags.Any(a=>a.Id==tagId);
+            return await dBContext.Tags.AnyAsync(a=>a.Id==tagId);
         }
 
 

@@ -17,8 +17,9 @@
                 <select asp-for="GoalId" class ="form-control" asp-items="ViewBag.GoalId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Type" class="control-label"></label>
-                <input asp-for="Type" class="form-control" />
+                <label asp-for="Type" class="control-label"></label><br />
+                <input type="radio" asp-for="Type" value="By Value" />By Value &nbsp;&nbsp;
+                <input type="radio" asp-for="Type" value="By Steps" />By Steps<br />
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">

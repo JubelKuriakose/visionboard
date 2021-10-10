@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VisionBoard.DAL;
 using VisionBoard.Models;
@@ -12,20 +8,21 @@ namespace VisionBoard.Controllers
 {
     public class TagsController : Controller
     {
-        private readonly GoalTrackerContext _context;
         private readonly ITagRepository tagRepository;
 
-        public TagsController(GoalTrackerContext context, ITagRepository tagRepository)
+        public TagsController( ITagRepository tagRepository)
         {
-            _context = context;
             this.tagRepository = tagRepository;
         }
+
 
         // GET: Tags
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tags.ToListAsync());
+            var tags = await tagRepository.GetAllTags();
+            return View(tags);
         }
+
 
         // GET: Tags/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -35,8 +32,8 @@ namespace VisionBoard.Controllers
                 return NotFound();
             }
 
-            var tag = await _context.Tags
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tag = await tagRepository.GetTag((int)id);
+
             if (tag == null)
             {
                 return NotFound();
@@ -45,11 +42,13 @@ namespace VisionBoard.Controllers
             return View(tag);
         }
 
+
         // GET: Tags/Create
         public IActionResult Create()
         {
             return View();
         }
+
 
         // POST: Tags/Create
         [HttpPost]
@@ -59,12 +58,11 @@ namespace VisionBoard.Controllers
             if (ModelState.IsValid)
             {
                 await tagRepository.AddTag(tag);
-                //_context.Add(tag);
-                //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(tag);
         }
+
 
         // GET: Tags/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -74,7 +72,8 @@ namespace VisionBoard.Controllers
                 return NotFound();
             }
 
-            var tag = await _context.Tags.FindAsync(id);
+            var tag = await tagRepository.GetTag((int) id);
+
             if (tag == null)
             {
                 return NotFound();
@@ -82,9 +81,8 @@ namespace VisionBoard.Controllers
             return View(tag);
         }
 
+
         // POST: Tags/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Colour,Status")] Tag tag)
@@ -98,12 +96,11 @@ namespace VisionBoard.Controllers
             {
                 try
                 {
-                    _context.Update(tag);
-                    await _context.SaveChangesAsync();
+                    await tagRepository.UpdateTag(tag);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TagExists(tag.Id))
+                    if (!await TagExists(tag.Id))
                     {
                         return NotFound();
                     }
@@ -117,6 +114,7 @@ namespace VisionBoard.Controllers
             return View(tag);
         }
 
+
         // GET: Tags/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -125,8 +123,7 @@ namespace VisionBoard.Controllers
                 return NotFound();
             }
 
-            var tag = await _context.Tags
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var tag = await tagRepository.GetTag((int)id);
             if (tag == null)
             {
                 return NotFound();
@@ -135,20 +132,22 @@ namespace VisionBoard.Controllers
             return View(tag);
         }
 
+
         // POST: Tags/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tag = await _context.Tags.FindAsync(id);
-            _context.Tags.Remove(tag);
-            await _context.SaveChangesAsync();
+            await tagRepository.DeleteTag(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TagExists(int id)
+
+        private async Task<bool> TagExists(int id)
         {
-            return _context.Tags.Any(e => e.Id == id);
+            return await tagRepository.IsTagExist(id);
         }
+
+
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace VisionBoard.DAL
 {
@@ -32,14 +33,14 @@ namespace VisionBoard.DAL
             return goal;
         }
 
-        public IEnumerable<Goal> GetAllGoals()
+        public async Task<IEnumerable<Goal>> GetAllGoals()
         {
-            return dBContext.Goals;
+            return await dBContext.Goals.Include(g => g.Reward).Include(g => g.Tag).Include(g => g.Steps).ToListAsync();
         }
 
         public async Task<Goal> GetGoal(int goalId)
         {
-            return await dBContext.Goals.FindAsync(goalId);
+            return await dBContext.Goals.Include(g => g.Reward).Include(g => g.Tag).Include(g => g.Steps).FirstOrDefaultAsync(g => g.Id == goalId);
         }
 
         public async Task<Goal> UpdateGoal(Goal goals)
@@ -50,9 +51,9 @@ namespace VisionBoard.DAL
             return goals;
         }
 
-        public bool IsGoalExist(int goalId)
+        public async Task<bool> IsGoalExist(int goalId)
         {
-            return dBContext.Goals.Any(a=>a.Id==goalId);
+            return await dBContext.Goals.AnyAsync(a=>a.Id==goalId);
         }
 
 

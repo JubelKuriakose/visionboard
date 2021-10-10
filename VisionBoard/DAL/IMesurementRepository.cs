@@ -6,7 +6,7 @@ namespace VisionBoard.DAL
 {
     public interface IMesurementRepository
     {
-        IEnumerable<Mesurement> GetAllMesurements();
+        Task<IEnumerable<Mesurement>> GetAllMesurements();
 
         Task<Mesurement> GetMesurement(int mesurementId);
 
