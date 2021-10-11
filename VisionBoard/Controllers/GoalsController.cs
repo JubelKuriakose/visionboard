@@ -176,5 +176,7 @@ namespace VisionBoard.Controllers
             return await goalsRepo.IsGoalExist(id);
             //return _context.Goals.Any(e => e.Id == id);
         }
+
+
     }
 }

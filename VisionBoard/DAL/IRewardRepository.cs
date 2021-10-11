@@ -16,7 +16,7 @@ namespace VisionBoard.DAL
 
         Task<Reward> DeleteReward(int rewardId);
 
-        bool IsRewardExist(int RewardId);
+        Task<bool> IsRewardExist(int RewardId);
 
     }
 }

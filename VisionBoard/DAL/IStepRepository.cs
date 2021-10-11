@@ -6,7 +6,7 @@ namespace VisionBoard.DAL
 {
     public interface IStepRepository
     {
-        IEnumerable<Step> GetAllSteps();
+        Task<IEnumerable<Step>> GetAllSteps();
 
         Task<Step> GetStep(int stepId);
 
@@ -16,7 +16,7 @@ namespace VisionBoard.DAL
 
         Task<Step> DeleteStep(int stepId);
 
-        bool IsStepExist(int StepId);
+        Task<bool> IsStepExist(int StepId);
 
     }
 }

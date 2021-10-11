@@ -44,7 +44,8 @@ namespace VisionBoard.DAL
 
         public async Task<Reward> GetReward(int rewardId)
         {
-            return await dBContext.Rewards.FindAsync(rewardId);
+            return await dBContext.Rewards.Include(r => r.Goal).FirstOrDefaultAsync(m => m.Id == rewardId);
+            //return await dBContext.Rewards.FindAsync(rewardId);
         }
 
 
@@ -57,9 +58,9 @@ namespace VisionBoard.DAL
         }
 
 
-        public bool IsRewardExist(int rewardId)
+        public async Task<bool> IsRewardExist(int rewardId)
         {
-            return dBContext.Rewards.Any(a=>a.Id==rewardId);
+            return await dBContext.Rewards.AnyAsync(a=>a.Id==rewardId);
         }
 
 

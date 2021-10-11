@@ -5,25 +5,32 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using VisionBoard.DAL;
 using VisionBoard.Models;
 
 namespace VisionBoard.Controllers
 {
     public class StepsController : Controller
     {
-        private readonly GoalTrackerContext _context;
+        private readonly IStepRepository stepsRepo;
+        private readonly IGoalRepository goalRepo;
 
-        public StepsController(GoalTrackerContext context)
+        public StepsController(IStepRepository stepsRepo, IGoalRepository goalRepo)
         {
-            _context = context;
+            this.stepsRepo = stepsRepo;
+            this.goalRepo = goalRepo;
         }
+
 
         // GET: Steps
         public async Task<IActionResult> Index()
         {
-            var goalTrackerContext = _context.Steps.Include(s => s.Goal);
-            return View(await goalTrackerContext.ToListAsync());
+            var steps = await stepsRepo.GetAllSteps();
+            return View(steps);
+            //var goalTrackerContext = _context.Steps.Include(s => s.Goal);
+            //return View(await goalTrackerContext.ToListAsync());
         }
+
 
         // GET: Steps/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -33,9 +40,10 @@ namespace VisionBoard.Controllers
                 return NotFound();
             }
 
-            var step = await _context.Steps
-                .Include(s => s.Goal)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var step = stepsRepo.GetStep((int)id);
+            //var step = await _context.Steps
+            //    .Include(s => s.Goal)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
             if (step == null)
             {
                 return NotFound();
@@ -45,26 +53,25 @@ namespace VisionBoard.Controllers
         }
 
         // GET: Steps/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["GoalId"] = new SelectList(_context.Goals, "Id", "Name");
+            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
             return View();
         }
 
         // POST: Steps/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Weight,DueDate,Status,GoalId")] Step step)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(step);
-                await _context.SaveChangesAsync();
+                await stepsRepo.AddStep(step);
+                //_context.Add(step);
+                //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GoalId"] = new SelectList(_context.Goals, "Id", "Name", step.GoalId);
+            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", step.GoalId);
             return View(step);
         }
 
@@ -76,18 +83,17 @@ namespace VisionBoard.Controllers
                 return NotFound();
             }
 
-            var step = await _context.Steps.FindAsync(id);
+            //var step = await _context.Steps.FindAsync(id);
+            var step = await stepsRepo.GetStep((int)id);
             if (step == null)
             {
                 return NotFound();
             }
-            ViewData["GoalId"] = new SelectList(_context.Goals, "Id", "Name", step.GoalId);
+            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", step.GoalId);
             return View(step);
         }
 
         // POST: Steps/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Weight,DueDate,Status,GoalId")] Step step)
@@ -101,12 +107,13 @@ namespace VisionBoard.Controllers
             {
                 try
                 {
-                    _context.Update(step);
-                    await _context.SaveChangesAsync();
+                    await stepsRepo.UpdateStep(step);
+                    //_context.Update(step);
+                    //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StepExists(step.Id))
+                    if (! await StepExists(step.Id))
                     {
                         return NotFound();
                     }
@@ -117,7 +124,7 @@ namespace VisionBoard.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GoalId"] = new SelectList(_context.Goals, "Id", "Name", step.GoalId);
+            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", step.GoalId);
             return View(step);
         }
 
@@ -129,9 +136,10 @@ namespace VisionBoard.Controllers
                 return NotFound();
             }
 
-            var step = await _context.Steps
-                .Include(s => s.Goal)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var step = await stepsRepo.GetStep((int)id);
+            //var step = await _context.Steps
+            //    .Include(s => s.Goal)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
             if (step == null)
             {
                 return NotFound();
@@ -145,15 +153,19 @@ namespace VisionBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var step = await _context.Steps.FindAsync(id);
-            _context.Steps.Remove(step);
-            await _context.SaveChangesAsync();
+            await stepsRepo.DeleteStep(id);
+            //var step = await _context.Steps.FindAsync(id);
+            //_context.Steps.Remove(step);
+            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StepExists(int id)
+        private async Task<bool> StepExists(int id)
         {
-            return _context.Steps.Any(e => e.Id == id);
+            return await stepsRepo.IsStepExist(id);
+           // return _context.Steps.Any(e => e.Id == id);
         }
+
+
     }
 }
