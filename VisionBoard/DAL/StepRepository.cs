@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace VisionBoard.DAL
 {
@@ -9,10 +10,12 @@ namespace VisionBoard.DAL
     {
         private readonly GoalTrackerContext dBContext;
 
+
         public StepRepository(GoalTrackerContext appDBContext)
         {
             this.dBContext = appDBContext;
         }
+
 
         public async Task<Step> AddStep(Step step)
         {
@@ -20,6 +23,7 @@ namespace VisionBoard.DAL
             await dBContext.SaveChangesAsync();
             return step;
         }
+
 
         public async Task<Step> DeleteStep(int stepId)
         {
@@ -32,15 +36,20 @@ namespace VisionBoard.DAL
             return step;
         }
 
-        public IEnumerable<Step> GetAllSteps()
+
+        public async Task<IEnumerable<Step>> GetAllSteps()
         {
-            return dBContext.Steps;
+            return await dBContext.Steps.Include(s => s.Goal).ToListAsync();
+            //return dBContext.Steps;
         }
+
 
         public async Task<Step> GetStep(int stepId)
         {
-            return await dBContext.Steps.FindAsync(stepId);
+            return await dBContext.Steps.Include(s => s.Goal).FirstOrDefaultAsync(m => m.Id == stepId);
+            //return await dBContext.Steps.FindAsync(stepId);
         }
+
 
         public async Task<Step> UpdateStep(Step steps)
         {
@@ -50,9 +59,10 @@ namespace VisionBoard.DAL
             return steps;
         }
 
-        public bool IsStepExist(int stepId)
+
+        public async Task<bool> IsStepExist(int stepId)
         {
-            return dBContext.Steps.Any(a=>a.Id==stepId);
+            return await dBContext.Steps.AnyAsync(a=>a.Id==stepId);
         }
 
 

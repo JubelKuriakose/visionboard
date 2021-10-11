@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace VisionBoard.DAL
 {
@@ -14,12 +15,14 @@ namespace VisionBoard.DAL
             this.dBContext = appDBContext;
         }
 
+
         public async Task<Reward> AddReward(Reward reward)
         {
             await dBContext.Rewards.AddAsync(reward);
             await dBContext.SaveChangesAsync();
             return reward;
         }
+
 
         public async Task<Reward> DeleteReward(int rewardId)
         {
@@ -32,15 +35,19 @@ namespace VisionBoard.DAL
             return reward;
         }
 
-        public IEnumerable<Reward> GetAllRewards()
+
+        public async Task<IEnumerable<Reward>> GetAllRewards()
         {
-            return dBContext.Rewards;
+            return await dBContext.Rewards.ToListAsync();
         }
+
 
         public async Task<Reward> GetReward(int rewardId)
         {
-            return await dBContext.Rewards.FindAsync(rewardId);
+            return await dBContext.Rewards.Include(r => r.Goal).FirstOrDefaultAsync(m => m.Id == rewardId);
+            //return await dBContext.Rewards.FindAsync(rewardId);
         }
+
 
         public async Task<Reward> UpdateReward(Reward rewards)
         {
@@ -50,9 +57,10 @@ namespace VisionBoard.DAL
             return rewards;
         }
 
-        public bool IsRewardExist(int rewardId)
+
+        public async Task<bool> IsRewardExist(int rewardId)
         {
-            return dBContext.Rewards.Any(a=>a.Id==rewardId);
+            return await dBContext.Rewards.AnyAsync(a=>a.Id==rewardId);
         }
 
 

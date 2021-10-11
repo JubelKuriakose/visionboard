@@ -6,7 +6,7 @@ namespace VisionBoard.DAL
 {
     public interface ITagRepository
     {
-        IEnumerable<Tag> GetAllTags();
+        Task<IEnumerable<Tag>> GetAllTags();
 
         Task<Tag> GetTag(int tagId);
 
@@ -16,7 +16,7 @@ namespace VisionBoard.DAL
 
         Task<Tag> DeleteTag(int tagId);
 
-        bool IsTagExist(int TagId);
+        Task<bool> IsTagExist(int TagId);
 
     }
 }

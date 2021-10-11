@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace VisionBoard.DAL
 {
@@ -32,9 +33,9 @@ namespace VisionBoard.DAL
             return mesurement;
         }
 
-        public IEnumerable<Mesurement> GetAllMesurements()
+        public async Task<IEnumerable<Mesurement>> GetAllMesurements()
         {
-            return dBContext.Mesurements;
+            return await dBContext.Mesurements.Include(m => m.Goal).ToListAsync();
         }
 
         public async Task<Mesurement> GetMesurement(int mesurementId)
