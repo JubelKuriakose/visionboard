@@ -52,6 +52,11 @@ namespace VisionBoard.Models
 
                 entity.Property(e => e.StartOn).HasColumnType("datetime");
 
+                entity.HasOne(d => d.Measurement)
+                    .WithMany(p => p.Goals)
+                    .HasForeignKey(d => d.MeasurementId)
+                    .HasConstraintName("FK__Goals__Measureme__34C8D9D1");
+
                 entity.HasOne(d => d.Reward)
                     .WithMany(p => p.Goals)
                     .HasForeignKey(d => d.RewardId)

@@ -24,7 +24,9 @@ namespace VisionBoard.Models
         public int? TagId { get; set; }
         public int? RewardId { get; set; }
         public bool Status { get; set; }
+        public int? MeasurementId { get; set; }
 
+        public virtual Mesurement Measurement { get; set; }
         public virtual Reward Reward { get; set; }
         public virtual Tag Tag { get; set; }
         public virtual ICollection<Mesurement> Mesurements { get; set; }
