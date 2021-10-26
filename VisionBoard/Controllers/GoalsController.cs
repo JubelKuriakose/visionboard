@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +17,14 @@ namespace VisionBoard.Controllers
         private readonly IGoalRepository goalsRepo;
         private readonly IRewardRepository rewardRepo;
         private readonly ITagRepository tagRepo;
+        private readonly IHostingEnvironment hostingEnvironment;
 
-        public GoalsController(IGoalRepository goalsRepo, IRewardRepository rewardRepo, ITagRepository tagRepo)
+        public GoalsController(IGoalRepository goalsRepo, IRewardRepository rewardRepo, ITagRepository tagRepo, IHostingEnvironment hostingEnvironment)
         {
             this.goalsRepo = goalsRepo;
             this.rewardRepo = rewardRepo;
             this.tagRepo = tagRepo;
+            this.hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Goals
@@ -64,12 +68,52 @@ namespace VisionBoard.Controllers
         // POST: Goals/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagId,RewardId,Status")] Goal goal)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        await goalsRepo.AddGoal(goal);
+        //        //_context.Add(goal);
+        //        //await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
+        //    ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name", goal.TagId);
+        //    return View(goal);
+        //}
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagId,RewardId,Status")] Goal goal)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,Picture,TagId,RewardId,Status")] CreateGoal createGoal)
         {
+            Goal goal = null;
             if (ModelState.IsValid)
             {
+                string uniqueFileName = null;
+                string filePath = null;
+                if (createGoal.Picture != null)
+                {
+                    string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + createGoal.Picture.FileName;
+                    filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    createGoal.Picture.CopyTo(new FileStream(filePath, FileMode.Create));
+                }
+
+                goal = new Goal()
+                {
+                    Name = createGoal.Name,
+                    Description = createGoal.Description,
+                    StartOn = createGoal.StartOn,
+                    EndingOn = createGoal.EndingOn,
+                    Magnitude = createGoal.Magnitude,
+                    PictureUrl = filePath,
+                    TagId = createGoal.TagId,
+                    RewardId = createGoal.RewardId
+                };
+
                 await goalsRepo.AddGoal(goal);
                 //_context.Add(goal);
                 //await _context.SaveChangesAsync();
@@ -79,6 +123,7 @@ namespace VisionBoard.Controllers
             ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name", goal.TagId);
             return View(goal);
         }
+
 
         // GET: Goals/Edit/5
         public async Task<IActionResult> Edit(int? id)
