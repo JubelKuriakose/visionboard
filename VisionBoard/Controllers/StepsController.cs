@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VisionBoard.DAL;
 using VisionBoard.Models;
+using VisionBoard.Utilis;
 
 namespace VisionBoard.Controllers
 {
@@ -59,6 +60,7 @@ namespace VisionBoard.Controllers
             return View();
         }
 
+
         // POST: Steps/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -67,13 +69,15 @@ namespace VisionBoard.Controllers
             if (ModelState.IsValid)
             {
                 await stepsRepo.AddStep(step);
-                //_context.Add(step);
-                //await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexSteps", await stepsRepo.GetAllSteps()) });
+                //return RedirectToAction(nameof(Index));
             }
-            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", step.GoalId);
-            return View(step);
+            // ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", step.GoalId);
+            //return View(step);
+            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", step) });
         }
+
 
         // GET: Steps/Edit/5
         public async Task<IActionResult> Edit(int? id)
