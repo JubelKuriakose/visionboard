@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -54,9 +52,22 @@ namespace VisionBoard.Controllers
         }
 
         // GET: Steps/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int? goalId)
         {
-            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
+            if (goalId == null)
+            {
+                ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
+            }
+            else
+            {
+                IEnumerable<Goal> goal = new List<Goal>()
+                {
+                    await goalRepo.GetGoal((int)goalId)
+                };
+                ViewData["GoalId"] = new SelectList(goal, "Id", "Name");
+                ViewData["CurrentGoalId"] = goalId;
+            }
+
             return View();
         }
 
@@ -64,17 +75,42 @@ namespace VisionBoard.Controllers
         // POST: Steps/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Weight,DueDate,Status,GoalId")] Step step)
+        public async Task<IActionResult> Create(int? currentGoalId, [Bind("Id,Name,Description,Weight,DueDate,Status,GoalId")] Step step)
         {
+
             if (ModelState.IsValid)
             {
                 await stepsRepo.AddStep(step);
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexSteps", await stepsRepo.GetAllSteps()) });
+
+                IEnumerable<Step> steps = new List<Step>();
+                if (currentGoalId == null)
+                {
+                    steps = await stepsRepo.GetAllSteps();
+                }
+                else
+                {
+                    steps = await stepsRepo.GetAllSteps((int)currentGoalId);
+                }
+
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexSteps", steps) });
                 //return RedirectToAction(nameof(Index));
             }
             // ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", step.GoalId);
             //return View(step);
-            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
+            
+            if (currentGoalId == null)
+            {
+                ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
+            }
+            else
+            {
+                IEnumerable<Goal> goal = new List<Goal>()
+                {
+                    await goalRepo.GetGoal((int)currentGoalId)
+                };
+                ViewData["GoalId"] = new SelectList(goal, "Id", "Name");
+            }
+
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", step) });
         }
 

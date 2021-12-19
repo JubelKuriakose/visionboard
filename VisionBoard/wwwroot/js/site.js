@@ -3,6 +3,7 @@
 
 // Write your JavaScript code.
 
+// show Create Step poup up
 showInPopup = (url, title) => {
     $.ajax({
         type: 'GET',
@@ -18,7 +19,7 @@ showInPopup = (url, title) => {
         }
     })
 }
-
+//------------------*****------------------//
 
 jQueryAjaxPost = form => {
     try {
@@ -30,6 +31,8 @@ jQueryAjaxPost = form => {
             processData: false,
             success: function (res) {
                 if (res.isValid) {
+                    //$('#view-all').html(res.html)
+                    $(".steps-table").html(res.html)
                     $('#view-all').html(res.html)
                     $('#form-modal .modal-body').html('');
                     $('#form-modal .modal-title').html('');
