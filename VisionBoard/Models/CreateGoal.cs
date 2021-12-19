@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 
 #nullable disable
 
 namespace VisionBoard.Models
 {
-    public partial class Goal
+    public partial class CreateGoal
     {
-        public Goal()
+        public CreateGoal()
         {
             Mesurements = new HashSet<Mesurement>();
             Rewards = new HashSet<Reward>();
@@ -20,13 +21,11 @@ namespace VisionBoard.Models
         public DateTime StartOn { get; set; }
         public DateTime? EndingOn { get; set; }
         public int? Magnitude { get; set; }
-        public string PictureUrl { get; set; }
+        public IFormFile Picture { get; set; }
         public int? TagId { get; set; }
         public int? RewardId { get; set; }
         public bool Status { get; set; }
-        public int? MeasurementId { get; set; }
 
-        public virtual Mesurement Measurement { get; set; }
         public virtual Reward Reward { get; set; }
         public virtual Tag Tag { get; set; }
         public virtual ICollection<Mesurement> Mesurements { get; set; }

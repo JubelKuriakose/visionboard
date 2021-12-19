@@ -43,6 +43,12 @@ namespace VisionBoard.DAL
             //return dBContext.Steps;
         }
 
+        public async Task<IEnumerable<Step>> GetAllSteps(int goalId)
+        {
+            return await dBContext.Steps.Where(s=>s.GoalId == goalId).Include(s => s.Goal).ToListAsync();
+            //return dBContext.Steps;
+        }
+
 
         public async Task<Step> GetStep(int stepId)
         {

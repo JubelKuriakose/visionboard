@@ -8,6 +8,8 @@ namespace VisionBoard.DAL
     {
         Task<IEnumerable<Step>> GetAllSteps();
 
+        Task<IEnumerable<Step>> GetAllSteps(int goalId);
+
         Task<Step> GetStep(int stepId);
 
         Task<Step> AddStep(Step step);

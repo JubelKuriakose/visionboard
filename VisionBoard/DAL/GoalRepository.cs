@@ -35,12 +35,12 @@ namespace VisionBoard.DAL
 
         public async Task<IEnumerable<Goal>> GetAllGoals()
         {
-            return await dBContext.Goals.Include(g => g.Reward).Include(g => g.Tag).Include(g => g.Steps).ToListAsync();
+            return await dBContext.Goals.Include(g => g.Reward).Include(g => g.Tag).Include(g => g.Steps).Include(g=>g.Measurement).ToListAsync();
         }
 
         public async Task<Goal> GetGoal(int goalId)
         {
-            return await dBContext.Goals.Include(g => g.Reward).Include(g => g.Tag).Include(g => g.Steps).FirstOrDefaultAsync(g => g.Id == goalId);
+            return await dBContext.Goals.Include(g => g.Reward).Include(g => g.Tag).Include(g => g.Measurement).Include(g => g.Steps).FirstOrDefaultAsync(g => g.Id == goalId);
         }
 
         public async Task<Goal> UpdateGoal(Goal goals)
