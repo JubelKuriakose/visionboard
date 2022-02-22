@@ -1,15 +1,11 @@
-image: mcr.microsoft.com/dotnet/core/sdk:latest
-
+image: mcr.microsoft.com/dotnet/sdk:5.0
 stages:
     - build
-    - test
-
-build:
-    stage: build
-    script:
-        - "dotnet build"
-
-test:
-    stage: test
-    script: 
-        - "dotnet test"
+    
+build develop:
+  stage: build
+  only:
+    - merge_requests
+    - develop
+  script:
+    - dotnet build

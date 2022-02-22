@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VisionBoard.DAL;
 using VisionBoard.Models;
+using VisionBoard.Utilis;
 
 namespace VisionBoard.Controllers
 {
@@ -10,7 +11,7 @@ namespace VisionBoard.Controllers
     {
         private readonly ITagRepository tagRepository;
 
-        public TagsController( ITagRepository tagRepository)
+        public TagsController(ITagRepository tagRepository)
         {
             this.tagRepository = tagRepository;
         }
@@ -58,9 +59,12 @@ namespace VisionBoard.Controllers
             if (ModelState.IsValid)
             {
                 await tagRepository.AddTag(tag);
-                return RedirectToAction(nameof(Index));
+                var tags = await tagRepository.GetAllTags();
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
             }
-            return View(tag);
+
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", tag) });
+
         }
 
 
@@ -72,7 +76,7 @@ namespace VisionBoard.Controllers
                 return NotFound();
             }
 
-            var tag = await tagRepository.GetTag((int) id);
+            var tag = await tagRepository.GetTag((int)id);
 
             if (tag == null)
             {
