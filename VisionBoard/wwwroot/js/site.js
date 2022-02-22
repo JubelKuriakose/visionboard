@@ -21,7 +21,7 @@ showInPopup = (url, title) => {
 }
 //------------------*****------------------//
 
-//------------------Edit or Create New Step------------------//
+//------------------Add or Edit Step------------------//
 jQueryAjaxPost = form => {
     try {
         $.ajax({
@@ -54,7 +54,7 @@ jQueryAjaxPost = form => {
 }
 //------------------*****------------------//
 
-//------------------Edit or Create New Measuerment------------------//
+//------------------ Add or Edit Measuerment------------------//
 
 AddorEditMeasuerment = form => {
     try {
@@ -84,4 +84,36 @@ AddorEditMeasuerment = form => {
         console.log(ex)
     }
 }
+//------------------*****------------------//
+
+//------------------Add or Edit Tag------------------//
+AddorEditTag = form => {
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.isValid) {
+                    $('#list-tags').html(res.html)
+                    $('#form-modal .modal-body').html('');
+                    $('#form-modal .modal-title').html('');
+                    $('#form-modal').modal('hide');
+                }
+                else
+                    $('#form-modal .modal-body').html(res.html);
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex)
+    }
+}
+//------------------*****------------------//
 
