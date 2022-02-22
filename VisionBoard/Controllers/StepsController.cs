@@ -26,8 +26,6 @@ namespace VisionBoard.Controllers
         {
             var steps = await stepsRepo.GetAllSteps();
             return View(steps);
-            //var goalTrackerContext = _context.Steps.Include(s => s.Goal);
-            //return View(await goalTrackerContext.ToListAsync());
         }
 
 
@@ -40,9 +38,7 @@ namespace VisionBoard.Controllers
             }
 
             var step = stepsRepo.GetStep((int)id);
-            //var step = await _context.Steps
-            //    .Include(s => s.Goal)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
+
             if (step == null)
             {
                 return NotFound();
@@ -93,11 +89,8 @@ namespace VisionBoard.Controllers
                 }
 
                 return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexSteps", steps) });
-                //return RedirectToAction(nameof(Index));
             }
-            // ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", step.GoalId);
-            //return View(step);
-            
+
             if (currentGoalId == null)
             {
                 ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
@@ -123,7 +116,6 @@ namespace VisionBoard.Controllers
                 return NotFound();
             }
 
-            //var step = await _context.Steps.FindAsync(id);
             var step = await stepsRepo.GetStep((int)id);
             if (step == null)
             {
@@ -148,12 +140,10 @@ namespace VisionBoard.Controllers
                 try
                 {
                     await stepsRepo.UpdateStep(step);
-                    //_context.Update(step);
-                    //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (! await StepExists(step.Id))
+                    if (!await StepExists(step.Id))
                     {
                         return NotFound();
                     }
@@ -177,9 +167,7 @@ namespace VisionBoard.Controllers
             }
 
             var step = await stepsRepo.GetStep((int)id);
-            //var step = await _context.Steps
-            //    .Include(s => s.Goal)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
+
             if (step == null)
             {
                 return NotFound();
@@ -194,16 +182,12 @@ namespace VisionBoard.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await stepsRepo.DeleteStep(id);
-            //var step = await _context.Steps.FindAsync(id);
-            //_context.Steps.Remove(step);
-            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private async Task<bool> StepExists(int id)
         {
             return await stepsRepo.IsStepExist(id);
-           // return _context.Steps.Any(e => e.Id == id);
         }
 
 

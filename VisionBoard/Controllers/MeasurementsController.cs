@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VisionBoard.DAL;
 using VisionBoard.Models;
+using VisionBoard.Utilis;
 
 namespace VisionBoard.Controllers
 {
@@ -20,34 +19,31 @@ namespace VisionBoard.Controllers
             this.goalRepo = goalRepo;
         }
 
+
         // GET: Mesurements
         public async Task<IActionResult> Index()
         {
             var measurements = await MeasurementRepo.GetAllMesurements();
             return View(measurements);
-            //var goalTrackerContext = _context.Mesurements.Include(m => m.Goal);
-            ///return View(await goalTrackerContext.ToListAsync());
         }
+
 
         // GET: Mesurements/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var mesurement = await MeasurementRepo.GetMesurement((int)id);
+
+                if (mesurement != null)
+                {
+                    return View(mesurement);
+                }
             }
 
-            var mesurement = await MeasurementRepo.GetMesurement((int)id);
-            //var mesurement = await _context.Mesurements
-            // .Include(m => m.Goal)
-            // .FirstOrDefaultAsync(m => m.Id == id);
-            if (mesurement == null)
-            {
-                return NotFound();
-            }
-
-            return View(mesurement);
+            return NotFound();
         }
+
 
         // GET: Mesurements/Create
         public async Task<IActionResult> Create()
@@ -55,6 +51,7 @@ namespace VisionBoard.Controllers
             ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
             return View();
         }
+
 
         // POST: Mesurements/Create
         [HttpPost]
@@ -64,13 +61,15 @@ namespace VisionBoard.Controllers
             if (ModelState.IsValid)
             {
                 await MeasurementRepo.AddMesurement(mesurement);
-                //_context.Add(mesurement);
-                //await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var measurements = await MeasurementRepo.GetAllMesurements();
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexMeasurement", measurements) });
             }
-            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", mesurement.GoalId);
-            return View(mesurement);
+
+            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", mesurement) });
+
         }
+
 
         // GET: Mesurements/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -89,9 +88,8 @@ namespace VisionBoard.Controllers
             return View(mesurement);
         }
 
+
         // POST: Mesurements/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,GoalId,Type,CurrentValue,TotalValue,Unit")] Mesurement mesurement)
@@ -106,8 +104,6 @@ namespace VisionBoard.Controllers
                 try
                 {
                     await MeasurementRepo.UpdateMesurement(mesurement);
-                    //_context.Update(mesurement);
-                    //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -136,9 +132,6 @@ namespace VisionBoard.Controllers
             }
 
             var mesurement = await MeasurementRepo.GetMesurement((int)id);
-            //var mesurement = await _context.Mesurements
-            //    .Include(m => m.Goal)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
             if (mesurement == null)
             {
                 return NotFound();
@@ -154,9 +147,6 @@ namespace VisionBoard.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await MeasurementRepo.DeleteMesurement(id);
-            //var mesurement = await _context.Mesurements.FindAsync(id);
-            //_context.Mesurements.Remove(mesurement);
-            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -164,7 +154,8 @@ namespace VisionBoard.Controllers
         private bool MesurementExists(int id)
         {
             return MeasurementRepo.IsMesurementExist(id);
-            //return _context.Mesurements.Any(e => e.Id == id);
         }
+
+
     }
 }
