@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VisionBoard.DAL;
 using VisionBoard.Models;
+using VisionBoard.Utilis;
 
 namespace VisionBoard.Controllers
 {
     public class RewardsController : Controller
     {
+
         private readonly IRewardRepository rewardsRepo;
         private readonly IGoalRepository goalRepo;
 
@@ -21,34 +20,31 @@ namespace VisionBoard.Controllers
             this.goalRepo = goalRepo;
         }
 
+
         // GET: Rewards
         public async Task<IActionResult> Index()
         {
             var rewards = await rewardsRepo.GetAllRewards();
             return View(rewards);
-            //var goalTrackerContext = _context.Rewards.Include(r => r.Goal);
-            //return View(await goalTrackerContext.ToListAsync());
         }
+
 
         // GET: Rewards/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
-            }
-            var reward = await rewardsRepo.GetReward((int)id);
+                var reward = await rewardsRepo.GetReward((int)id);
 
-            //var reward = await _context.Rewards
-            //    .Include(r => r.Goal)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-            if (reward == null)
-            {
-                return NotFound();
+                if (reward != null)
+                {
+                    return View(reward);
+                }
             }
 
-            return View(reward);
+            return NotFound();
         }
+
 
         // GET: Rewards/Create
         public async Task<IActionResult> Create()
@@ -56,6 +52,7 @@ namespace VisionBoard.Controllers
             ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
             return View();
         }
+
 
         // POST: Rewards/Create
         [HttpPost]
@@ -65,31 +62,31 @@ namespace VisionBoard.Controllers
             if (ModelState.IsValid)
             {
                 await rewardsRepo.AddReward(reward);
-                //_context.Add(reward);
-                //await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var rewards = await rewardsRepo.GetAllRewards();
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexRewards", rewards) });
             }
             ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", reward.GoalId);
-            return View(reward);
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", reward) });
         }
+
 
         // GET: Rewards/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var reward = await rewardsRepo.GetReward((int)id);
+
+                if (reward != null)
+                {
+                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", reward.GoalId);
+                    return View(reward);
+                }
             }
 
-            var reward = await rewardsRepo.GetReward((int)id);
-            //var reward = await _context.Rewards.FindAsync(id);
-            if (reward == null)
-            {
-                return NotFound();
-            }
-            ViewData["GoalId"] = new SelectList( await goalRepo.GetAllGoals(), "Id", "Name", reward.GoalId);
-            return View(reward);
+            return NotFound();
         }
+
 
         // POST: Rewards/Edit/5
         [HttpPost]
@@ -106,12 +103,10 @@ namespace VisionBoard.Controllers
                 try
                 {
                     await rewardsRepo.UpdateReward(reward);
-                    //_context.Update(reward);
-                    //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (! await RewardExists(reward.Id))
+                    if (!await RewardExists(reward.Id))
                     {
                         return NotFound();
                     }
@@ -126,25 +121,23 @@ namespace VisionBoard.Controllers
             return View(reward);
         }
 
+
         // GET: Rewards/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var reward = await rewardsRepo.GetReward((int)id);
+
+                if (reward != null)
+                {
+                    return View(reward);
+                }
             }
 
-            var reward = await rewardsRepo.GetReward((int)id);
-            //var reward = await _context.Rewards
-            //    .Include(r => r.Goal)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-            if (reward == null)
-            {
-                return NotFound();
-            }
-
-            return View(reward);
+            return NotFound();
         }
+
 
         // POST: Rewards/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -152,16 +145,15 @@ namespace VisionBoard.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await rewardsRepo.DeleteReward(id);
-            //var reward = await _context.Rewards.FindAsync(id);
-            //_context.Rewards.Remove(reward);
-            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private async Task<bool> RewardExists(int id)
         {
             return await rewardsRepo.IsRewardExist(id);
-            //return _context.Rewards.Any(e => e.Id == id);
         }
+
+
     }
 }
