@@ -71,18 +71,16 @@ namespace VisionBoard.Controllers
         // GET: Tags/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var tag = await tagRepository.GetTag((int)id);
+                if (tag != null)
+                {
+                    return View(tag);
+                }
             }
 
-            var tag = await tagRepository.GetTag((int)id);
-
-            if (tag == null)
-            {
-                return NotFound();
-            }
-            return View(tag);
+            return NotFound();
         }
 
 
@@ -101,6 +99,8 @@ namespace VisionBoard.Controllers
                 try
                 {
                     await tagRepository.UpdateTag(tag);
+                    var tags = await tagRepository.GetAllTags();
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -113,9 +113,8 @@ namespace VisionBoard.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(tag);
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", tag) });
         }
 
 
