@@ -11,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-12">
-        <form asp-controller="Steps" asp-action="Create" asp-route-currentGoalId = "@ViewBag.CurrentGoalId" onsubmit="return jQueryAjaxPost(this);">
+        <form asp-controller="Steps" asp-action="Create" asp-route-currentGoalId="@ViewBag.CurrentGoalId" onsubmit="return AddorEditStep(this);">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
                 <div class="col-md-4">
@@ -23,7 +23,7 @@
                 <div class="col-md-8">
                     <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>
-                        <input asp-for="Name" class="form-control"/>
+                        <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                 </div>
@@ -63,10 +63,6 @@
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
