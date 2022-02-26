@@ -147,3 +147,24 @@ AddorEditReward = form => {
 }
 //------------------*****------------------//
 
+//------------------Delete Tag-----------------//
+function DeleteTag(url) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            success: function (res) {
+                if (res.success) {
+                    $('#list-tags').html(res.html);
+                }
+                else {
+                    $.notify(res.message, "error");
+                }
+            }
+        });
+        $('#form-modal .modal-body').html('');
+        $('#form-modal .modal-title').html('');
+        $('#form-modal').modal('hide');
+}
+//------------------*****------------------//
+
+

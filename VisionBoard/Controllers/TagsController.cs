@@ -28,19 +28,16 @@ namespace VisionBoard.Controllers
         // GET: Tags/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var tag = await tagRepository.GetTag((int)id);
+
+                if (tag != null)
+                {
+                    return View(tag);
+                }
             }
-
-            var tag = await tagRepository.GetTag((int)id);
-
-            if (tag == null)
-            {
-                return NotFound();
-            }
-
-            return View(tag);
+            return NotFound();
         }
 
 
@@ -74,6 +71,7 @@ namespace VisionBoard.Controllers
             if (id != null)
             {
                 var tag = await tagRepository.GetTag((int)id);
+
                 if (tag != null)
                 {
                     return View(tag);
@@ -121,28 +119,26 @@ namespace VisionBoard.Controllers
         // GET: Tags/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
-            }
+                var tag = await tagRepository.GetTag((int)id);
 
-            var tag = await tagRepository.GetTag((int)id);
-            if (tag == null)
-            {
-                return NotFound();
+                if (tag != null)
+                {
+                    return View(tag);
+                }
             }
-
-            return View(tag);
+            return NotFound();
         }
 
 
         // POST: Tags/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await tagRepository.DeleteTag(id);
-            return RedirectToAction(nameof(Index));
+            var tags = await tagRepository.GetAllTags();
+            return Json(new { success = true, html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
         }
 
 
