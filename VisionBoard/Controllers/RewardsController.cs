@@ -142,11 +142,11 @@ namespace VisionBoard.Controllers
 
         // POST: Rewards/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await rewardsRepo.DeleteReward(id);
-            return RedirectToAction(nameof(Index));
+            var rewards = await rewardsRepo.GetAllRewards();
+            return Json(new { success = true, html = Helper.RenderRazorViewToString(this, "IndexRewards", rewards) });
         }
 
 
