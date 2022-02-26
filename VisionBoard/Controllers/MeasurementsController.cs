@@ -74,18 +74,16 @@ namespace VisionBoard.Controllers
         // GET: Mesurements/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var mesurement = await MeasurementRepo.GetMesurement((int)id);
+                if (mesurement != null)
+                {
+                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", mesurement.GoalId);
+                    return View(mesurement);
+                }
             }
-
-            var mesurement = await MeasurementRepo.GetMesurement((int)id);
-            if (mesurement == null)
-            {
-                return NotFound();
-            }
-            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", mesurement.GoalId);
-            return View(mesurement);
+            return NotFound();
         }
 
 
@@ -104,6 +102,8 @@ namespace VisionBoard.Controllers
                 try
                 {
                     await MeasurementRepo.UpdateMesurement(mesurement);
+                    var measurements = await MeasurementRepo.GetAllMesurements();
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexMeasurement", measurements) });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,10 +116,9 @@ namespace VisionBoard.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", mesurement.GoalId);
-            return View(mesurement);
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", mesurement) });
         }
 
 
