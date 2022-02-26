@@ -142,11 +142,11 @@ namespace VisionBoard.Controllers
 
         // POST: Mesurements/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await MeasurementRepo.DeleteMesurement(id);
-            return RedirectToAction(nameof(Index));
+            var measurements = await MeasurementRepo.GetAllMesurements();
+            return Json(new { success = true, html = Helper.RenderRazorViewToString(this, "IndexMeasurement", measurements) });
         }
 
 
