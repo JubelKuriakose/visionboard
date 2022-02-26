@@ -103,6 +103,8 @@ namespace VisionBoard.Controllers
                 try
                 {
                     await rewardsRepo.UpdateReward(reward);
+                    var rewards = await rewardsRepo.GetAllRewards();
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexRewards", rewards) });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -115,10 +117,9 @@ namespace VisionBoard.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", reward.GoalId);
-            return View(reward);
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", reward) });
         }
 
 
