@@ -65,7 +65,7 @@ AddorEditMeasurement = form => {
             processData: false,
             success: function (res) {
                 if (res.isValid) {
-                    $('#list-mesurement').html(res.html)
+                    $('#list-measurement').html(res.html)
                     $('#form-modal .modal-body').html('');
                     $('#form-modal .modal-title').html('');
                     $('#form-modal').modal('hide');
@@ -167,7 +167,7 @@ function DeleteTag(url) {
 }
 //------------------*****------------------//
 
-//------------------Delete Tag-----------------//
+//------------------Delete Rewards-----------------//
 function DeleteReward(url) {
     $.ajax({
         type: 'POST',
@@ -187,4 +187,23 @@ function DeleteReward(url) {
 }
 //------------------*****------------------//
 
+//------------------Delete Measurement-----------------//
+function DeleteMeasurement(url) {
+    $.ajax({
+        type: 'POST',
+        url: url,
+        success: function (res) {
+            if (res.success) {
+                $('#list-measurement').html(res.html);
+            }
+            else {
+                $.notify(res.message, "error");
+            }
+        }
+    });
+    $('#form-modal .modal-body').html('');
+    $('#form-modal .modal-title').html('');
+    $('#form-modal').modal('hide');
+}
+//------------------*****------------------//
 
