@@ -56,7 +56,7 @@ jQueryAjaxPost = form => {
 
 //------------------ Add or Edit Measuerment------------------//
 
-AddorEditMeasuerment = form => {
+AddorEditMeasurement = form => {
     try {
         $.ajax({
             type: 'POST',
