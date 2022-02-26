@@ -22,7 +22,7 @@ showInPopup = (url, title) => {
 //------------------*****------------------//
 
 //------------------Add or Edit Step------------------//
-jQueryAjaxPost = form => {
+AddorEditStep = form => {
     try {
         $.ajax({
             type: 'POST',
@@ -32,7 +32,6 @@ jQueryAjaxPost = form => {
             processData: false,
             success: function (res) {
                 if (res.isValid) {
-                    //$('#view-all').html(res.html)
                     $(".steps-table").html(res.html)
                     $('#view-all').html(res.html)
                     $('#form-modal .modal-body').html('');

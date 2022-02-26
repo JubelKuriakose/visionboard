@@ -32,20 +32,17 @@ namespace VisionBoard.Controllers
         // GET: Steps/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var step = stepsRepo.GetStep((int)id);
+                if (step != null)
+                {
+                    return View(step);
+                }
             }
-
-            var step = stepsRepo.GetStep((int)id);
-
-            if (step == null)
-            {
-                return NotFound();
-            }
-
-            return View(step);
+            return NotFound();
         }
+
 
         // GET: Steps/Create
         public async Task<IActionResult> Create(int? goalId)
@@ -111,19 +108,18 @@ namespace VisionBoard.Controllers
         // GET: Steps/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var step = await stepsRepo.GetStep((int)id);
+                if (step != null)
+                {
+                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", step.GoalId);
+                    return View(step);
+                }
             }
-
-            var step = await stepsRepo.GetStep((int)id);
-            if (step == null)
-            {
-                return NotFound();
-            }
-            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", step.GoalId);
-            return View(step);
+            return NotFound();
         }
+
 
         // POST: Steps/Edit/5
         [HttpPost]
@@ -140,6 +136,8 @@ namespace VisionBoard.Controllers
                 try
                 {
                     await stepsRepo.UpdateStep(step);
+                    var steps = await stepsRepo.GetAllSteps();
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexSteps", steps) });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -152,29 +150,26 @@ namespace VisionBoard.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", step.GoalId);
-            return View(step);
+            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", step) });
         }
+
 
         // GET: Steps/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var step = await stepsRepo.GetStep((int)id);
+                if (step != null)
+                {
+                    return View(step);
+                }
             }
-
-            var step = await stepsRepo.GetStep((int)id);
-
-            if (step == null)
-            {
-                return NotFound();
-            }
-
-            return View(step);
+            return NotFound();
         }
+
 
         // POST: Steps/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -184,6 +179,7 @@ namespace VisionBoard.Controllers
             await stepsRepo.DeleteStep(id);
             return RedirectToAction(nameof(Index));
         }
+
 
         private async Task<bool> StepExists(int id)
         {
