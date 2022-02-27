@@ -52,7 +52,7 @@
                 <td>
                     <a onclick="showInPopup('@Url.Action("Edit","Steps",new { id = @item.Id },Context.Request.Scheme)','Edit Step')" class="btn-sm btn-light">Edit</a>|
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a onclick="showInPopup('@Url.Action("Delete","Steps", new { id = @item.Id }, Context.Request.Scheme)','Delete Step')" class="btn-sm btn-light">Delete</a>
                 </td>
             </tr>
         }

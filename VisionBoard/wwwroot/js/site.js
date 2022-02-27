@@ -33,7 +33,7 @@ AddorEditStep = form => {
             success: function (res) {
                 if (res.isValid) {
                     $(".steps-table").html(res.html)
-                    $('#view-all').html(res.html)
+                    $('#list-steps').html(res.html)
                     $('#form-modal .modal-body').html('');
                     $('#form-modal .modal-title').html('');
                     $('#form-modal').modal('hide');
@@ -149,21 +149,21 @@ AddorEditReward = form => {
 
 //------------------Delete Tag-----------------//
 function DeleteTag(url) {
-        $.ajax({
-            type: 'POST',
-            url: url,
-            success: function (res) {
-                if (res.success) {
-                    $('#list-tags').html(res.html);
-                }
-                else {
-                    $.notify(res.message, "error");
-                }
+    $.ajax({
+        type: 'POST',
+        url: url,
+        success: function (res) {
+            if (res.success) {
+                $('#list-tags').html(res.html);
             }
-        });
-        $('#form-modal .modal-body').html('');
-        $('#form-modal .modal-title').html('');
-        $('#form-modal').modal('hide');
+            else {
+                $.notify(res.message, "error");
+            }
+        }
+    });
+    $('#form-modal .modal-body').html('');
+    $('#form-modal .modal-title').html('');
+    $('#form-modal').modal('hide');
 }
 //------------------*****------------------//
 
@@ -195,6 +195,27 @@ function DeleteMeasurement(url) {
         success: function (res) {
             if (res.success) {
                 $('#list-measurement').html(res.html);
+            }
+            else {
+                $.notify(res.message, "error");
+            }
+        }
+    });
+    $('#form-modal .modal-body').html('');
+    $('#form-modal .modal-title').html('');
+    $('#form-modal').modal('hide');
+}
+//------------------*****------------------//
+
+//------------------Delete Step-----------------//
+function DeleteStep(url) {
+    $.ajax({
+        type: 'POST',
+        url: url,
+        success: function (res) {
+            if (res.success) {
+                $('#list-steps').html(res.html);
+                $(".steps-table").html(res.html)
             }
             else {
                 $.notify(res.message, "error");

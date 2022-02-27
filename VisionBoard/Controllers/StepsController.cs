@@ -173,11 +173,11 @@ namespace VisionBoard.Controllers
 
         // POST: Steps/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await stepsRepo.DeleteStep(id);
-            return RedirectToAction(nameof(Index));
+            var steps = await stepsRepo.GetAllSteps();
+            return Json(new { success = true, html = Helper.RenderRazorViewToString(this, "IndexSteps", steps) });
         }
 
 
