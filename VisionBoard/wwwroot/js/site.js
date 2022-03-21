@@ -22,6 +22,7 @@ showInPopup = (url, title) => {
 //------------------*****------------------//
 
 //------------------Add or Edit Step------------------//
+
 AddorEditStep = form => {
     try {
         $.ajax({
@@ -51,7 +52,7 @@ AddorEditStep = form => {
         console.log(ex)
     }
 }
-//------------------*****------------------//
+
 
 //------------------ Add or Edit Measuerment------------------//
 
@@ -126,11 +127,21 @@ AddorEditReward = form => {
             contentType: false,
             processData: false,
             success: function (res) {
+                console.log(res);
                 if (res.isValid) {
-                    $('#list-rewards').html(res.html)
-                    $('#form-modal .modal-body').html('');
-                    $('#form-modal .modal-title').html('');
-                    $('#form-modal').modal('hide');
+                    if (res.source == "DropDown") {
+                        $("#RewardId").append($("<option></option>").val(res.id).text(res.name).attr("selected", "selected"));
+                        $('#form-modal .modal-body').html('');
+                        $('#form-modal .modal-title').html('');
+                        $('#form-modal').modal('hide');
+                    }
+                    else {
+                        $('#list-rewards').html(res.html)
+                        $('#form-modal .modal-body').html('');
+                        $('#form-modal .modal-title').html('');
+                        $('#form-modal').modal('hide');
+                    }
+
                 }
                 else
                     $('#form-modal .modal-body').html(res.html);
