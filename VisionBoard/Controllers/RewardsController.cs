@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -47,9 +48,10 @@ namespace VisionBoard.Controllers
 
 
         // GET: Rewards/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(string source)
         {
             ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name");
+            ViewBag.Source = source;
             return View();
         }
 
@@ -57,15 +59,24 @@ namespace VisionBoard.Controllers
         // POST: Rewards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Descrption,GoalId,PictureUrl,Status")] Reward reward)
+        public async Task<IActionResult> Create(string source, [Bind("Id,Name,Descrption,GoalId,PictureUrl,Status")] Reward reward)
         {
             if (ModelState.IsValid)
             {
-                await rewardsRepo.AddReward(reward);
-                var rewards = await rewardsRepo.GetAllRewards();
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexRewards", rewards) });
+                var newReward = await rewardsRepo.AddReward(reward);
+
+                if (source == "DropDown")
+                {
+                    return Json(new { isValid = true, Source = source, Id = newReward.Id, Name = newReward.Name });
+                }
+                else
+                {
+                    var rewards = await rewardsRepo.GetAllRewards();
+                    return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexRewards", rewards) });
+                }
             }
             ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", reward.GoalId);
+            ViewBag.Source = source;
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", reward) });
         }
 
