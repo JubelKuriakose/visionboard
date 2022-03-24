@@ -42,8 +42,9 @@ namespace VisionBoard.Controllers
 
 
         // GET: Tags/Create
-        public IActionResult Create()
+        public IActionResult Create(string source)
         {
+            ViewBag.Source = source;
             return View();
         }
 
@@ -51,13 +52,21 @@ namespace VisionBoard.Controllers
         // POST: Tags/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Colour,Status")] Tag tag)
+        public async Task<IActionResult> Create(string source, [Bind("Id,Name,Colour,Status")] Tag tag)
         {
             if (ModelState.IsValid)
             {
-                await tagRepository.AddTag(tag);
-                var tags = await tagRepository.GetAllTags();
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
+                var newTag = await tagRepository.AddTag(tag);
+
+                if (source == "DropDown")
+                {
+                    return Json(new { isValid = true, Source = source, Id = newTag.Id, Name = newTag.Name });
+                }
+                else
+                {
+                    var tags = await tagRepository.GetAllTags();
+                    return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
+                }
             }
 
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", tag) });

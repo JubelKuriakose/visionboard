@@ -97,7 +97,13 @@ AddorEditTag = form => {
             processData: false,
             success: function (res) {
                 if (res.isValid) {
-                    $('#list-tags').html(res.html)
+                    if (res.source == "DropDown") {
+                        $("#TagId").append($("<option></option>").val(res.id).text(res.name).attr("selected", "selected"));
+                    }
+                    else {
+                        $('#list-tags').html(res.html)
+                    }
+
                     $('#form-modal .modal-body').html('');
                     $('#form-modal .modal-title').html('');
                     $('#form-modal').modal('hide');
@@ -131,16 +137,14 @@ AddorEditReward = form => {
                 if (res.isValid) {
                     if (res.source == "DropDown") {
                         $("#RewardId").append($("<option></option>").val(res.id).text(res.name).attr("selected", "selected"));
-                        $('#form-modal .modal-body').html('');
-                        $('#form-modal .modal-title').html('');
-                        $('#form-modal').modal('hide');
                     }
                     else {
-                        $('#list-rewards').html(res.html)
-                        $('#form-modal .modal-body').html('');
-                        $('#form-modal .modal-title').html('');
-                        $('#form-modal').modal('hide');
+                        $('#list-rewards').html(res.html)                        
                     }
+
+                    $('#form-modal .modal-body').html('');
+                    $('#form-modal .modal-title').html('');
+                    $('#form-modal').modal('hide');
 
                 }
                 else
