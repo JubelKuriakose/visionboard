@@ -52,7 +52,8 @@
                                     <select asp-for="TagId" class="form-control" asp-items="ViewBag.TagId"></select>
                                 </div>
                             </div>
-                            <div class="col-md-1">add</div>
+                            <div class="col-md-1">
+                                <a onclick="showInPopup('@Url.Action("Create", "Tags", new { source = "DropDown" }, Context.Request.Scheme)','Add Tag')" class="btn-sm btn-light">&#x2795;</a></div>
                             <div class="col-md-1">edit</div>
                             <div class="col-md-1">del</div>
                         </div>
