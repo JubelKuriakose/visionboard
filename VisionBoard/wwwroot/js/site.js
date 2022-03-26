@@ -136,6 +136,9 @@ AddorEditReward = form => {
                 console.log(res);
                 if (res.isValid) {
                     if (res.source == "DropDown") {
+                        if ($("#RewardId option:selected").val() == res.id) {
+                            $("#RewardId option:selected").remove();
+                        }                        
                         $("#RewardId").append($("<option></option>").val(res.id).text(res.name).attr("selected", "selected"));
                     }
                     else {
@@ -159,6 +162,14 @@ AddorEditReward = form => {
     } catch (ex) {
         console.log(ex)
     }
+}
+//------------------*****------------------//
+
+//------------------Edit Reward From dropdown------------------//
+EditRewardFromDropdown = (url, title) => {
+    var id = $("#RewardId").children(":selected").attr("value");
+    url = url + "&id=" + id;
+    showInPopup(url, title);
 }
 //------------------*****------------------//
 
@@ -242,4 +253,3 @@ function DeleteStep(url) {
     $('#form-modal').modal('hide');
 }
 //------------------*****------------------//
-

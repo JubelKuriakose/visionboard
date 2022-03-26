@@ -82,7 +82,7 @@ namespace VisionBoard.Controllers
 
 
         // GET: Rewards/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string source)
         {
             if (id != null)
             {
@@ -91,6 +91,7 @@ namespace VisionBoard.Controllers
                 if (reward != null)
                 {
                     ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", reward.GoalId);
+                    ViewBag.Source = source;
                     return View(reward);
                 }
             }
@@ -102,7 +103,7 @@ namespace VisionBoard.Controllers
         // POST: Rewards/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Descrption,GoalId,PictureUrl,Status")] Reward reward)
+        public async Task<IActionResult> Edit(int id, string source, [Bind("Id,Name,Descrption,GoalId,PictureUrl,Status")] Reward reward)
         {
             if (id != reward.Id)
             {
@@ -113,9 +114,17 @@ namespace VisionBoard.Controllers
             {
                 try
                 {
-                    await rewardsRepo.UpdateReward(reward);
-                    var rewards = await rewardsRepo.GetAllRewards();
-                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexRewards", rewards) });
+                    var newReward = await rewardsRepo.UpdateReward(reward);
+
+                    if (source == "DropDown")
+                    {
+                        return Json(new { isValid = true, Source = source, Id = newReward.Id, Name = newReward.Name });
+                    }
+                    else
+                    {
+                        var rewards = await rewardsRepo.GetAllRewards();
+                        return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexRewards", rewards) });
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {

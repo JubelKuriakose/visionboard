@@ -11,100 +11,103 @@
 <div class="row">
     <div class="col-md-12">
         <form asp-action="Create" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="Name" class="control-label"></label>
-                            <input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label asp-for="StartOn" class="control-label"></label>
-                            <input asp-for="StartOn" class="form-control" />
-                            <span asp-validation-for="StartOn" class="text-danger"></span>
-                        </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="StartOn" class="control-label"></label>
+                        <input asp-for="StartOn" class="form-control" />
+                        <span asp-validation-for="StartOn" class="text-danger"></span>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label asp-for="EndingOn" class="control-label"></label>
-                            <input asp-for="EndingOn" class="form-control" />
-                            <span asp-validation-for="EndingOn" class="text-danger"></span>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="EndingOn" class="control-label"></label>
+                        <input asp-for="EndingOn" class="form-control" />
+                        <span asp-validation-for="EndingOn" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" rows="5" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <label asp-for="TagId" class="control-label"></label>
+                                <select asp-for="TagId" class="form-control" asp-items="ViewBag.TagId"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <a onclick="showInPopup('@Url.Action("Create", "Tags", new { source = "DropDown" }, Context.Request.Scheme)','Add Tag')" class="btn-sm btn-light">&#x2795;</a>
+                        </div>
+                        <div class="col-md-1">edit</div>
+                        <div class="col-md-1">del</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <label asp-for="RewardId" class="control-label"></label>
+                                <select asp-for="RewardId" class="form-control" asp-items="ViewBag.RewardId"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <a onclick="showInPopup('@Url.Action("Create", "Rewards", new { source = "DropDown" }, Context.Request.Scheme)','Add Reward')" class="btn-sm btn-light">&#x2795;</a>
+                        </div>
+                        <div class="col-md-1">
+                            <a onclick="EditRewardFromDropdown('@Url.Action("Edit","Rewards", new { source = "DropDown" }, Context.Request.Scheme)','Edit Reward')" class="btn-sm btn-light">&#x270E;</a>
+                        </div>
+                        <div class="col-md-1">del</div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Picture" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10">
+                            <div class="custom-file">
+                                <input asp-for="Picture" class="form-control custom-file-input">
+                                <label class="custom-file-label">Choose File...</label>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <br />
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="Description" class="control-label"></label>
-                            <textarea asp-for="Description" rows="5" class="form-control"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-9">
-                                <div class="form-group">
-                                    <label asp-for="TagId" class="control-label"></label>
-                                    <select asp-for="TagId" class="form-control" asp-items="ViewBag.TagId"></select>
-                                </div>
-                            </div>
-                            <div class="col-md-1">
-                                <a onclick="showInPopup('@Url.Action("Create", "Tags", new { source = "DropDown" }, Context.Request.Scheme)','Add Tag')" class="btn-sm btn-light">&#x2795;</a></div>
-                            <div class="col-md-1">edit</div>
-                            <div class="col-md-1">del</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-9">
-                                <div class="form-group">
-                                    <label asp-for="RewardId" class="control-label"></label>
-                                    <select asp-for="RewardId" class="form-control" asp-items="ViewBag.RewardId"></select>
-                                </div>
-                            </div>
-                            <div class="col-md-1">
-                                <a onclick="showInPopup('@Url.Action("Create", "Rewards", new { source = "DropDown" }, Context.Request.Scheme)','Add Reward')" class="btn-sm btn-light">&#x2795;</a>
-                            </div>
-                            <div class="col-md-1">edit</div>
-                            <div class="col-md-1">del</div>
-                        </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label asp-for="Magnitude" class="control-label"></label>
+                        <input asp-for="Magnitude" class="form-control" />
+                        <span asp-validation-for="Magnitude" class="text-danger"></span>
                     </div>
                 </div>
-                <br />
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="Picture" class="col-sm-2 col-form-label"></label>
-                            <div class="col-sm-10">
-                                <div class="custom-file">
-                                    <input asp-for="Picture" class="form-control custom-file-input">
-                                    <label class="custom-file-label">Choose File...</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-1">
-                        <div class="form-group">
-                            <label asp-for="Magnitude" class="control-label"></label>
-                            <input asp-for="Magnitude" class="form-control" />
-                            <span asp-validation-for="Magnitude" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-1">
-                        <div class="form-group form-check">
-                            <label class="form-check-label">
-                                <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
-                            </label>
-                        </div>
+                <div class="col-md-1">
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
+                        </label>
                     </div>
                 </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
-</div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
 </div>
 
 <div>

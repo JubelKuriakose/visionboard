@@ -8,6 +8,7 @@
 <div class="row">
     <div class="col-md-12">
         <form asp-controller="Rewards" asp-action="Edit" asp-route-id="@Model.Id" onsubmit="return AddorEditReward(this);">
+            <input type="hidden" name="source" id="source" value="@ViewBag.Source" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="row">
