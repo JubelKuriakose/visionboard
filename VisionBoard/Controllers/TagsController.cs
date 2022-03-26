@@ -75,7 +75,7 @@ namespace VisionBoard.Controllers
 
 
         // GET: Tags/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, string source)
         {
             if (id != null)
             {
@@ -83,6 +83,7 @@ namespace VisionBoard.Controllers
 
                 if (tag != null)
                 {
+                    ViewBag.Source = source;
                     return View(tag);
                 }
             }
@@ -94,7 +95,7 @@ namespace VisionBoard.Controllers
         // POST: Tags/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Colour,Status")] Tag tag)
+        public async Task<IActionResult> Edit(int id, string source, [Bind("Id,Name,Colour,Status")] Tag tag)
         {
             if (id != tag.Id)
             {
@@ -105,9 +106,17 @@ namespace VisionBoard.Controllers
             {
                 try
                 {
-                    await tagRepository.UpdateTag(tag);
-                    var tags = await tagRepository.GetAllTags();
-                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
+                    var newTag = await tagRepository.UpdateTag(tag);
+
+                    if (source == "DropDown")
+                    {
+                        return Json(new { isValid = true, Source = source, Id = newTag.Id, Name = newTag.Name });
+                    }
+                    else
+                    {
+                        var tags = await tagRepository.GetAllTags();
+                        return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
