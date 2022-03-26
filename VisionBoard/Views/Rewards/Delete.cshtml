@@ -40,5 +40,5 @@
             @Html.DisplayFor(model => model.Goal.Name)
         </dd>
     </dl>
-    <a class="btn btn-danger" onclick="DeleteReward('@Url.Action("Delete", "Rewards", new { id=@Model.Id})')">Delete</a>
+    <a class="btn btn-danger" onclick="DeleteReward('@Url.Action("Delete", "Rewards", new { id=@Model.Id, source=@ViewBag.Source})')">Delete</a>
 </div>
