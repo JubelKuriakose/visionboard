@@ -98,6 +98,9 @@ AddorEditTag = form => {
             success: function (res) {
                 if (res.isValid) {
                     if (res.source == "DropDown") {
+                        if ($("#TagId option:selected").val() == res.id) {
+                            $("#TagId option:selected").remove();
+                        }
                         $("#TagId").append($("<option></option>").val(res.id).text(res.name).attr("selected", "selected"));
                     }
                     else {
@@ -123,6 +126,14 @@ AddorEditTag = form => {
 }
 //------------------*****------------------//
 
+//------------------Edit Tag From dropdown------------------//
+EditTagFromDropdown = (url, title) => {
+    var id = $("#TagId").children(":selected").attr("value");
+    url = url + "&id=" + id;
+    showInPopup(url, title);
+}
+//------------------*****------------------//
+
 //------------------Add or Edit Reward------------------//
 AddorEditReward = form => {
     try {
@@ -138,11 +149,11 @@ AddorEditReward = form => {
                     if (res.source == "DropDown") {
                         if ($("#RewardId option:selected").val() == res.id) {
                             $("#RewardId option:selected").remove();
-                        }                        
+                        }
                         $("#RewardId").append($("<option></option>").val(res.id).text(res.name).attr("selected", "selected"));
                     }
                     else {
-                        $('#list-rewards').html(res.html)                        
+                        $('#list-rewards').html(res.html)
                     }
 
                     $('#form-modal .modal-body').html('');

@@ -55,7 +55,9 @@
                         <div class="col-md-1">
                             <a onclick="showInPopup('@Url.Action("Create", "Tags", new { source = "DropDown" }, Context.Request.Scheme)','Add Tag')" class="btn-sm btn-light">&#x2795;</a>
                         </div>
-                        <div class="col-md-1">edit</div>
+                        <div class="col-md-1">
+                            <a onclick="EditTagFromDropdown('@Url.Action("Edit","Tags", new { source = "DropDown" }, Context.Request.Scheme)','Edit Tag')" class="btn-sm btn-light">&#x270E;</a>
+                        </div>
                         <div class="col-md-1">del</div>
                     </div>
                     <div class="row">
