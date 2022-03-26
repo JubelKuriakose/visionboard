@@ -210,8 +210,13 @@ function DeleteReward(url) {
         type: 'POST',
         url: url,
         success: function (res) {
-            if (res.success) {
-                $('#list-rewards').html(res.html);
+            if (res.isValid) {
+                if (res.source == "DropDown") {
+                    $("#RewardId option:selected").remove();
+                }
+                else {
+                    $('#list-rewards').html(res.html);
+                }
             }
             else {
                 $.notify(res.message, "error");
@@ -221,6 +226,14 @@ function DeleteReward(url) {
     $('#form-modal .modal-body').html('');
     $('#form-modal .modal-title').html('');
     $('#form-modal').modal('hide');
+}
+//------------------*****------------------//
+
+//------------------Delete Reward From dropdown------------------//
+DeleteRewardFromDropdown = (url, title) => {
+    var id = $("#RewardId").children(":selected").attr("value");
+    url = url + "&id=" + id;
+    showInPopup(url, title);
 }
 //------------------*****------------------//
 

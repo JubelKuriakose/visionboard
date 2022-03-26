@@ -144,7 +144,7 @@ namespace VisionBoard.Controllers
 
 
         // GET: Rewards/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string source)
         {
             if (id != null)
             {
@@ -152,6 +152,7 @@ namespace VisionBoard.Controllers
 
                 if (reward != null)
                 {
+                    ViewBag.Source = source;
                     return View(reward);
                 }
             }
@@ -162,11 +163,20 @@ namespace VisionBoard.Controllers
 
         // POST: Rewards/Delete/5
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string source)
         {
-            await rewardsRepo.DeleteReward(id);
-            var rewards = await rewardsRepo.GetAllRewards();
-            return Json(new { success = true, html = Helper.RenderRazorViewToString(this, "IndexRewards", rewards) });
+            var newReward = await rewardsRepo.DeleteReward(id);
+
+            if (source == "DropDown")
+            {
+                return Json(new { isValid = true, Source = source, Id = newReward.Id, Name = newReward.Name });
+            }
+            else
+            {
+                var rewards = await rewardsRepo.GetAllRewards();
+                return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexRewards", rewards) });
+            }
+
         }
 
 

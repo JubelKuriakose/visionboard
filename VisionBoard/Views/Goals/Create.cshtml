@@ -73,7 +73,9 @@
                         <div class="col-md-1">
                             <a onclick="EditRewardFromDropdown('@Url.Action("Edit","Rewards", new { source = "DropDown" }, Context.Request.Scheme)','Edit Reward')" class="btn-sm btn-light">&#x270E;</a>
                         </div>
-                        <div class="col-md-1">del</div>
+                        <div class="col-md-1">
+                            <a onclick="DeleteRewardFromDropdown('@Url.Action("Delete","Rewards", new { source = "DropDown" }, Context.Request.Scheme)')" class="btn-sm btn-light">&#x1f5d1;</a>
+                        </div>
                     </div>
                 </div>
             </div>
