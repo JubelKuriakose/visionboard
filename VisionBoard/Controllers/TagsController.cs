@@ -135,7 +135,7 @@ namespace VisionBoard.Controllers
 
 
         // GET: Tags/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, string source)
         {
             if (id != null)
             {
@@ -143,6 +143,7 @@ namespace VisionBoard.Controllers
 
                 if (tag != null)
                 {
+                    ViewBag.Source = source;
                     return View(tag);
                 }
             }
@@ -152,11 +153,18 @@ namespace VisionBoard.Controllers
 
         // POST: Tags/Delete/5
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string source)
         {
-            await tagRepository.DeleteTag(id);
-            var tags = await tagRepository.GetAllTags();
-            return Json(new { success = true, html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
+            var newTag = await tagRepository.DeleteTag(id);
+            if (source == "DropDown")
+            {
+                return Json(new { isValid = true, Source = source, Id = newTag.Id, Name = newTag.Name });
+            }
+            else
+            {
+                var tags = await tagRepository.GetAllTags();
+                return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
+            }
         }
 
 

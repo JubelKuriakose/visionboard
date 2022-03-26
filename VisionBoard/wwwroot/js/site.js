@@ -12,7 +12,7 @@ showInPopup = (url, title) => {
             $('#form-modal .modal-body').html(res);
             $('#form-modal .modal-title').html(title);
             $('#form-modal').modal('show');
-            // to make popup draggable
+
             $('.modal-dialog').draggable({
                 handle: ".modal-header"
             });
@@ -190,8 +190,13 @@ function DeleteTag(url) {
         type: 'POST',
         url: url,
         success: function (res) {
-            if (res.success) {
-                $('#list-tags').html(res.html);
+            if (res.isValid) {
+                if (res.source == "DropDown") {
+                    $("#TagId option:selected").remove();
+                }
+                else {
+                    $('#list-tags').html(res.html);
+                }
             }
             else {
                 $.notify(res.message, "error");
@@ -201,6 +206,14 @@ function DeleteTag(url) {
     $('#form-modal .modal-body').html('');
     $('#form-modal .modal-title').html('');
     $('#form-modal').modal('hide');
+}
+//------------------*****------------------//
+
+//------------------Delete Reward From dropdown------------------//
+DeleteTagFromDropdown = (url, title) => {
+    var id = $("#TagId").children(":selected").attr("value");
+    url = url + "&id=" + id;
+    showInPopup(url, title);
 }
 //------------------*****------------------//
 

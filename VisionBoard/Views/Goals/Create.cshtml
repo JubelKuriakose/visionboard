@@ -58,7 +58,9 @@
                         <div class="col-md-1">
                             <a onclick="EditTagFromDropdown('@Url.Action("Edit","Tags", new { source = "DropDown" }, Context.Request.Scheme)','Edit Tag')" class="btn-sm btn-light">&#x270E;</a>
                         </div>
-                        <div class="col-md-1">del</div>
+                        <div class="col-md-1">
+                            <a onclick="DeleteTagFromDropdown('@Url.Action("Delete","Tags", new { source = "DropDown" }, Context.Request.Scheme)')" class="btn-sm btn-light">&#x1f5d1;</a>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-9">
