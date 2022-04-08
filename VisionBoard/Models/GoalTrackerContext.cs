@@ -20,6 +20,7 @@ namespace VisionBoard.Models
         public virtual DbSet<Reward> Rewards { get; set; }
         public virtual DbSet<Step> Steps { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<GoalTags> GoalTags { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -60,12 +61,7 @@ namespace VisionBoard.Models
                 entity.HasOne(d => d.Reward)
                     .WithMany(p => p.Goals)
                     .HasForeignKey(d => d.RewardId)
-                    .HasConstraintName("FK__Goals__RewardId__300424B4");
-
-                entity.HasOne(d => d.Tag)
-                    .WithMany(p => p.Goals)
-                    .HasForeignKey(d => d.TagId)
-                    .HasConstraintName("FK__Goals__TagId__2F10007B");
+                    .HasConstraintName("FK__Goals__RewardId__300424B4");                
             });
 
             modelBuilder.Entity<Mesurement>(entity =>
@@ -133,6 +129,26 @@ namespace VisionBoard.Models
                     .HasForeignKey(d => d.GoalId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Steps__GoalId__32E0915F");
+            });
+
+            modelBuilder.Entity<GoalTags>(entity =>
+            {
+                entity.HasKey(e => new { e.GoalId, e.TagId })
+                    .HasName("PK_GT");
+
+                entity.ToTable("GoalTags");
+
+                entity.HasOne(d => d.Goal)
+                    .WithMany(p => p.GoalTags)
+                    .HasForeignKey(d => d.GoalId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Goal");
+
+                entity.HasOne(d => d.Tag)
+                    .WithMany(p => p.GoalTags)
+                    .HasForeignKey(d => d.TagId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Tag");
             });
 
             modelBuilder.Entity<Tag>(entity =>

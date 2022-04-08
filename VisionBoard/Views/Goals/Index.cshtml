@@ -37,7 +37,9 @@
                     @Html.DisplayNameFor(model => model.Reward)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Tag)
+                    @* @Html.DisplayNameFor(model => model.Tag)*@
+                    <label for="tags">Tags</label>
+
                 </th>
                 <th></th>
             </tr>
@@ -71,7 +73,13 @@
                         @Html.DisplayFor(modelItem => item.Reward.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Tag.Name)
+                        @*@Html.DisplayFor(modelItem => item.Tag.Name)*@
+                        @foreach (GoalTags goaltag in item.GoalTags)
+                        {
+                        <span class="badge" style="padding:5px;background-color: @goaltag.Tag.Colour">
+                            @goaltag.Tag.Name
+                        </span>
+                        }
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
