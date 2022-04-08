@@ -8,7 +8,7 @@ namespace VisionBoard.Models
     {
         public Tag()
         {
-            Goals = new HashSet<Goal>();
+            GoalTags = new HashSet<GoalTags>();
         }
 
         public int Id { get; set; }
@@ -16,6 +16,6 @@ namespace VisionBoard.Models
         public string Colour { get; set; }
         public bool Status { get; set; }
 
-        public virtual ICollection<Goal> Goals { get; set; }
+        public virtual ICollection<GoalTags> GoalTags { get; set; }
     }
 }

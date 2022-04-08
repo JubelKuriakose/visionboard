@@ -4,6 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.14/css/bootstrap-multiselect.css" integrity="sha512-EvvoSMXERW4Pe9LjDN9XDzHd66p8Z49gcrB7LCUplh0GcEHiV816gXGwIhir6PJiwl0ew8GFM2QaIg2TW02B9A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <h1>Create</h1>
 
 <h4>Goal</h4>
@@ -48,8 +49,10 @@
                     <div class="row">
                         <div class="col-md-9">
                             <div class="form-group">
-                                <label asp-for="TagId" class="control-label"></label>
-                                <select asp-for="TagId" class="form-control" asp-items="ViewBag.TagId"></select>
+                                <label asp-for="TagIds" class="control-label"></label>
+                                <!--<select asp-for="TagIds" class="form-control" asp-items="ViewBag.TagIds"></select>-->
+                                <select id="tagDropDownList" name="TagIds"
+                                        asp-items="ViewBag.TagId" multiple="multiple" class="form-control"></select>
                             </div>
                         </div>
                         <div class="col-md-1">
@@ -122,6 +125,8 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.14/js/bootstrap-multiselect.js" integrity="sha512-CoQowxKxumTPPSTrsNoJ0VU1Sd6QFUXvEX/CLD2h2/peHOLb5IfkLT1cK/DeACOe5ixA4zgJzcX5g59TnEkV8w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function () {
             $('.custom-file-input').on("change", function () {
@@ -129,5 +134,7 @@
                 $(this).next('.custom-file-label').html(fileName);
             });
         });
+
+        $('#tagDropDownList').multiselect();
     </script>
 }

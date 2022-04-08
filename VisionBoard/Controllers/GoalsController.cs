@@ -65,29 +65,10 @@ namespace VisionBoard.Controllers
             return View();
         }
 
-        // POST: Goals/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagId,RewardId,Status")] Goal goal)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        await goalsRepo.AddGoal(goal);
-        //        //_context.Add(goal);
-        //        //await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
-        //    ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name", goal.TagId);
-        //    return View(goal);
-        //}
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,Picture,TagId,RewardId,Status")] CreateGoal createGoal)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,Picture,TagIds,RewardId,Status")] CreateGoal createGoal)
         {
             Goal goal = null;
             if (ModelState.IsValid)
@@ -102,6 +83,8 @@ namespace VisionBoard.Controllers
                     createGoal.Picture.CopyTo(new FileStream(filePath, FileMode.Create));
                 }
 
+                List<GoalTags> goalTags = createGoal.TagIds.Select(t => new GoalTags() { GoalId = createGoal.Id, TagId = t }).ToList();
+
                 goal = new Goal()
                 {
                     Name = createGoal.Name,
@@ -110,17 +93,14 @@ namespace VisionBoard.Controllers
                     EndingOn = createGoal.EndingOn,
                     Magnitude = createGoal.Magnitude,
                     PictureUrl = filePath,
-                    TagId = createGoal.TagId,
+                    GoalTags = goalTags,
                     RewardId = createGoal.RewardId
                 };
 
                 await goalsRepo.AddGoal(goal);
-                //_context.Add(goal);
-                //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
-            ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name", goal.TagId);
             return View(goal);
         }
 
@@ -141,7 +121,7 @@ namespace VisionBoard.Controllers
                 return NotFound();
             }
             ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
-            ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name", goal.TagId);
+            //ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name", goal.TagId);
             return View(goal);
         }
 
@@ -179,7 +159,7 @@ namespace VisionBoard.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
-            ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name", goal.TagId);
+            //ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name", goal.TagId);
             return View(goal);
         }
 

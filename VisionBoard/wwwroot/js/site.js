@@ -97,11 +97,9 @@ AddorEditTag = form => {
             processData: false,
             success: function (res) {
                 if (res.isValid) {
-                    if (res.source == "DropDown") {
-                        if ($("#TagId option:selected").val() == res.id) {
-                            $("#TagId option:selected").remove();
-                        }
-                        $("#TagId").append($("<option></option>").val(res.id).text(res.name).attr("selected", "selected"));
+                    if (res.source == "DropDown") {                        
+                        $("#tagDropDownList").append($("<option></option>").val(res.id).text(res.name).attr("selected", "selected"));
+                        $("#tagDropDownList").multiselect('rebuild');
                     }
                     else {
                         $('#list-tags').html(res.html)
