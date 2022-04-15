@@ -1,9 +1,87 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿
+//------------------Auto Hide Navbar------------------//
+document.addEventListener("DOMContentLoaded", function () {
 
-// Write your JavaScript code.
+    autoHide = document.querySelector('.autohide');
 
-// show Create Step poup up
+    navbarHeight = document.querySelector('.navbar').offsetHeight;
+    document.body.style.paddingTop = navbarHeight + 'px';
+
+    if (autoHide) {
+
+        var lastScrollTop = 0;
+        window.addEventListener('scroll', function () {
+            let scrollTop = window.scrollY;
+            if (scrollTop < lastScrollTop) {
+                autoHide.classList.remove('scrolled-down');
+                autoHide.classList.add('scrolled-up');
+            }
+            else {
+                autoHide.classList.remove('scrolled-up');
+                autoHide.classList.add('scrolled-down');
+            }
+            lastScrollTop = scrollTop;
+
+        });
+
+    }
+
+});
+//-------------------*******-----------------------//
+
+
+//------------------Button back to top------------------//
+
+window.onscroll = function () {
+    scrollFunction();
+};
+
+function scrollFunction() {
+    let mybutton = document.getElementById("btn-back-to-top");
+
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        mybutton.style.display = "block";
+    } else {
+        mybutton.style.display = "none";
+    }
+}
+
+function backToTop() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+//-------------------*******-----------------------//
+
+//------------------GetALLGoalsOfTags------------------//
+$("#selectTagsIndex").change(function () {
+    GetALLGoalsOfTags($(this).val());
+});
+
+function GetALLGoalsOfTags(tagIds) {
+    try {
+        $.ajax({
+            type: 'GET',
+            url: "/Goals/Index",
+            data: { tagIds: tagIds },
+            traditional: true,
+            success: function (res) {
+                if (res.isValid) {
+                    $('#list-goals').html(res.html)
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex)
+    }
+}
+//------------------*****------------------//
+
+//------------------show Create Step poup up------------------// 
 showInPopup = (url, title) => {
     $.ajax({
         type: 'GET',
@@ -97,7 +175,7 @@ AddorEditTag = form => {
             processData: false,
             success: function (res) {
                 if (res.isValid) {
-                    if (res.source == "DropDown") {                        
+                    if (res.source == "DropDown") {
                         $("#tagDropDownList").append($("<option></option>").val(res.id).text(res.name).attr("selected", "selected"));
                         $("#tagDropDownList").multiselect('rebuild');
                     }

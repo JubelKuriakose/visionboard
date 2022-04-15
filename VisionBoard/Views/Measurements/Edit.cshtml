@@ -1,4 +1,4 @@
-﻿@model VisionBoard.Models.Mesurement
+﻿@model VisionBoard.Models.Measurement
 
 @{
     ViewData["Title"] = "Edit";
@@ -13,9 +13,9 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label asp-for="GoalId" class="control-label"></label>
-                        <select asp-for="GoalId" class="form-control" asp-items="ViewBag.GoalId"></select>
-                        <span asp-validation-for="GoalId" class="text-danger"></span>
+                        @*<label asp-for="GoalId" class="control-label"></label>
+                            <select asp-for="GoalId" class="form-control" asp-items="ViewBag.GoalId"></select>
+                            <span asp-validation-for="GoalId" class="text-danger"></span>*@
                     </div>
                 </div>
                 <div class="col-md-6">

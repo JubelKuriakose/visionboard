@@ -15,6 +15,7 @@ namespace VisionBoard.DAL
             this.dBContext = appDBContext;
         }
 
+
         public async Task<Goal> AddGoal(Goal goal)
         {
             await dBContext.Goals.AddAsync(goal);
@@ -22,10 +23,11 @@ namespace VisionBoard.DAL
             return goal;
         }
 
+
         public async Task<Goal> DeleteGoal(int goalId)
         {
             var goal = await dBContext.Goals.FindAsync(goalId);
-            if(goal!=null)
+            if (goal != null)
             {
                 dBContext.Goals.Remove(goal);
                 await dBContext.SaveChangesAsync();
@@ -33,27 +35,42 @@ namespace VisionBoard.DAL
             return goal;
         }
 
-        public async Task<IEnumerable<Goal>> GetAllGoals()
+
+        public async Task<IEnumerable<Goal>> GetAllGoals(int[] tagIds)
         {
-            return await dBContext.Goals.Include(g => g.Reward).Include(g => g.Steps).Include(g=>g.Measurement).Include(g=>g.GoalTags).ThenInclude(g=>g.Tag).ToListAsync();
+            IEnumerable<Goal> goals;
+
+            if (tagIds != null && tagIds.Length > 0)
+            {
+                goals = await dBContext.Goals.Include(g => g.Reward).Include(g => g.Steps).Include(g => g.Measurement)
+                    .Include(g => g.GoalTags).ThenInclude(g => g.Tag).Where(g => g.GoalTags.Any(gt => tagIds.Any(tagIds => tagIds == gt.TagId))).ToListAsync();
+            }
+            else
+            {
+                goals = await dBContext.Goals.Include(g => g.Reward).Include(g => g.Steps).Include(g => g.Measurement).Include(g => g.GoalTags).ThenInclude(g => g.Tag).ToListAsync();
+            }
+            return goals;
         }
+
 
         public async Task<Goal> GetGoal(int goalId)
         {
             return await dBContext.Goals.Include(g => g.Reward).Include(g => g.Measurement).Include(g => g.Steps).Include(g => g.GoalTags).ThenInclude(g => g.Tag).FirstOrDefaultAsync(g => g.Id == goalId);
         }
 
+
         public async Task<Goal> UpdateGoal(Goal goals)
         {
             var goalsChanges = dBContext.Goals.Attach(goals);
-            goalsChanges.State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            goalsChanges.State = EntityState.Modified;
             await dBContext.SaveChangesAsync();
             return goals;
         }
 
+
         public async Task<bool> IsGoalExist(int goalId)
         {
-            return await dBContext.Goals.AnyAsync(a=>a.Id==goalId);
+            return await dBContext.Goals.AnyAsync(a => a.Id == goalId);
         }
 
 

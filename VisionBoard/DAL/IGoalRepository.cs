@@ -6,7 +6,7 @@ namespace VisionBoard.DAL
 {
     public interface IGoalRepository
     {
-        Task<IEnumerable<Goal>> GetAllGoals();
+        Task<IEnumerable<Goal>> GetAllGoals(int[] tagIds);
 
         Task<Goal> GetGoal(int goalId);
 
