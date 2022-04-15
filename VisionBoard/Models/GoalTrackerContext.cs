@@ -16,7 +16,7 @@ namespace VisionBoard.Models
         }
 
         public virtual DbSet<Goal> Goals { get; set; }
-        public virtual DbSet<Mesurement> Mesurements { get; set; }
+        public virtual DbSet<Measurement> Measurements { get; set; }
         public virtual DbSet<Reward> Rewards { get; set; }
         public virtual DbSet<Step> Steps { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
@@ -28,7 +28,7 @@ namespace VisionBoard.Models
             {
                 var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appSettings.json").Build();
                 string connectionString = builder.GetSection("ConnectionStrings").GetSection("GoalTrackerConnection").Value.ToString();
-                optionsBuilder.UseSqlServer(connectionString);                
+                optionsBuilder.UseSqlServer(connectionString);
             }
         }
 
@@ -54,17 +54,17 @@ namespace VisionBoard.Models
                 entity.Property(e => e.StartOn).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Measurement)
-                    .WithMany(p => p.Goals)
-                    .HasForeignKey(d => d.MeasurementId)
-                    .HasConstraintName("FK__Goals__Measureme__34C8D9D1");
+                    .WithOne(p => p.Goal)
+                    .HasForeignKey<Measurement>(d => d.Id)
+                    .HasConstraintName("FK_Goals_Mesurement");
 
                 entity.HasOne(d => d.Reward)
-                    .WithMany(p => p.Goals)
-                    .HasForeignKey(d => d.RewardId)
-                    .HasConstraintName("FK__Goals__RewardId__300424B4");                
+                    .WithOne(p => p.Goal)
+                    .HasForeignKey<Reward>(d => d.Id)
+                    .HasConstraintName("FK_Goals_Reward");
             });
 
-            modelBuilder.Entity<Mesurement>(entity =>
+            modelBuilder.Entity<Measurement>(entity =>
             {
                 entity.ToTable("Mesurement");
 
@@ -79,10 +79,10 @@ namespace VisionBoard.Models
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Goal)
-                    .WithMany(p => p.Mesurements)
-                    .HasForeignKey(d => d.GoalId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Mesuremen__GoalI__30F848ED");
+                    .WithOne(p => p.Measurement)
+                    .HasForeignKey<Goal>(d => d.MeasurementId)
+                    .HasConstraintName("FK_Goals_Mesurement");
+
             });
 
             modelBuilder.Entity<Reward>(entity =>
@@ -105,10 +105,9 @@ namespace VisionBoard.Models
                 entity.Property(e => e.Status).HasColumnName("status");
 
                 entity.HasOne(d => d.Goal)
-                    .WithMany(p => p.Rewards)
-                    .HasForeignKey(d => d.GoalId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Reward__GoalId__31EC6D26");
+                    .WithOne(p => p.Reward)
+                    .HasForeignKey<Goal>(d => d.RewardId)
+                    .HasConstraintName("FK_Goals_Reward");
             });
 
             modelBuilder.Entity<Step>(entity =>

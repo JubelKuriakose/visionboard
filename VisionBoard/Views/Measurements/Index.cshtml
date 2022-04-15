@@ -1,4 +1,4 @@
-﻿@model IEnumerable<VisionBoard.Models.Mesurement>
+﻿@model IEnumerable<VisionBoard.Models.Measurement>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,6 +9,6 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<div id="list-measurement" class="mesurement-table">
+<div id="list-measurement" class="measurement-table">
     @await Html.PartialAsync("IndexMeasurement", Model)
 </div>

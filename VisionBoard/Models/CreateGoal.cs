@@ -10,7 +10,7 @@ namespace VisionBoard.Models
     {
         public CreateGoal()
         {
-            Mesurements = new HashSet<Mesurement>();
+            Measurement = new HashSet<Measurement>();
             Rewards = new HashSet<Reward>();
             Steps = new HashSet<Step>();
         }
@@ -27,7 +27,7 @@ namespace VisionBoard.Models
         public int[] TagIds { get; set; }
 
         public virtual Reward Reward { get; set; }
-        public virtual ICollection<Mesurement> Mesurements { get; set; }
+        public virtual ICollection<Measurement> Measurement { get; set; }
         public virtual ICollection<Reward> Rewards { get; set; }
         public virtual ICollection<Step> Steps { get; set; }
     }
