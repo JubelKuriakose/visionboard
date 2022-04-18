@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace VisionBoard.DAL
 {
@@ -26,13 +27,23 @@ namespace VisionBoard.DAL
 
         public async Task<Measurement> DeleteMeasurement(int measurementId)
         {
-            var measurement = await dBContext.Measurements.FindAsync(measurementId);
-            if (measurement != null)
+            Measurement measurement = null;
+            try
             {
-                dBContext.Measurements.Remove(measurement);
-                await dBContext.SaveChangesAsync();
+                measurement = await dBContext.Measurements.FindAsync(measurementId);
+
+                if (measurement != null)
+                {
+                    dBContext.Measurements.Remove(measurement);
+                    await dBContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
             return measurement;
+
         }
 
 
@@ -44,7 +55,7 @@ namespace VisionBoard.DAL
 
         public async Task<Measurement> GetMeasurement(int measurementId)
         {
-            return await dBContext.Measurements.FindAsync(measurementId);
+            return await dBContext.Measurements.Include(m => m.Goal).FirstAsync(m => m.Id == measurementId);
         }
 
 

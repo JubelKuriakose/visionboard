@@ -8,20 +8,15 @@
 <div class="row">
     <div class="col-md-12">
         <form asp-controller="Measurements" asp-action="Edit" asp-route-id="@Model.Id" onsubmit="return AddorEditMeasurement(this);">
+            @Html.Hidden("GoalId", Model.Goal.Id)
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        @*<label asp-for="GoalId" class="control-label"></label>
-                            <select asp-for="GoalId" class="form-control" asp-items="ViewBag.GoalId"></select>
-                            <span asp-validation-for="GoalId" class="text-danger"></span>*@
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="Type" class="control-label"></label>
-                        <input asp-for="Type" class="form-control" />
+                        <label asp-for="Type" class="control-label"></label><br />
+                        <input type="radio" asp-for="Type" value="By Value" />By Value &nbsp;&nbsp;
+                        <input type="radio" asp-for="Type" value="By Steps" />By Steps<br />
                         <span asp-validation-for="Type" class="text-danger"></span>
                     </div>
                 </div>

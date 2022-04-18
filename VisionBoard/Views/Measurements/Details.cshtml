@@ -1,48 +1,35 @@
 ﻿@model VisionBoard.Models.Measurement
 
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h1>Details</h1>
-
-<div>
-    <h4>Measurement</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CurrentValue)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CurrentValue)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalValue)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TotalValue)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Unit)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Unit)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Goal)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Goal.Name)
-        </dd>
-    </dl>
+@Html.Hidden("MeasurementId", Model.Id)
+<div class="row">
+    <div class="col-md-12">
+        <div class="row p-2">
+            <div class="col-md-10">
+                @{
+                    string progress = (Math.Round((double)(100 * Model.CurrentValue) / Model.TotalValue)).ToString() + "%";
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            @progress
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="col-md-2">
+                <a onclick="showInPopup('@Url.Action("Edit","Measurements",new { id = @Model.Id },Context.Request.Scheme)','Edit Mesurement')"><i class="fa-solid fa-pen-to-square text-warning"></i></a>
+            </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-md-6">
+                <span class="label font-weight-bold">Completed : </span>
+                <span>@Model.CurrentValue.ToString()&nbsp;@(Model.Type=="By Steps"?"Steps": Model.Unit )</span>
+            </div>
+            <div class="col-md-6">
+                <div class="float-right">
+                    <span class="label font-weight-bold">Total : </span>
+                    <span>@Model.TotalValue.ToString()&nbsp;@(Model.Type=="By Steps"?"Steps": Model.Unit )</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+

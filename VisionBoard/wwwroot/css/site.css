@@ -106,3 +106,9 @@ body {
     border-radius: 60px;
 }
 /*----------------*/
+
+/* Goal Image*/
+.goal-img {
+    width: 310px;
+    height: 259px;
+}
