@@ -57,6 +57,7 @@ namespace VisionBoard.Controllers
                 return NotFound();
             }
             var goal = await goalsRepo.GetGoal((int)id);
+
             if (goal == null)
             {
                 return NotFound();
@@ -107,9 +108,10 @@ namespace VisionBoard.Controllers
                 };
 
                 await goalsRepo.AddGoal(goal);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { id = goal.Id });                
             }
             ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
+            ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name");
             return View(goal);
         }
 

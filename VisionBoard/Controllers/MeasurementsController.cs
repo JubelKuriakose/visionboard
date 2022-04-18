@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using VisionBoard.DAL;
 using VisionBoard.Models;
 using VisionBoard.Utilis;
@@ -28,7 +26,7 @@ namespace VisionBoard.Controllers
         }
 
 
-        // GET: Mesurements/Details/5
+        // GET: Mesurements/Details/5        
         public async Task<IActionResult> Details(int? id)
         {
             if (id != null)
@@ -46,9 +44,9 @@ namespace VisionBoard.Controllers
 
 
         // GET: Mesurements/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int? goalId)
         {
-            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name");
+            ViewData["GoalId"] = goalId;
             return View();
         }
 
@@ -56,16 +54,18 @@ namespace VisionBoard.Controllers
         // POST: Mesurements/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,GoalId,Type,CurrentValue,TotalValue,Unit")] Measurement measurement)
+        public async Task<IActionResult> Create(int goalId, [Bind("Id,Type,CurrentValue,TotalValue,Unit")] Measurement measurement)
         {
             if (ModelState.IsValid)
             {
-                await MeasurementRepo.AddMeasurement(measurement);
-                var measurements = await MeasurementRepo.GetAllMeasurements();
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexMeasurement", measurements) });
+                Measurement mesurement = await MeasurementRepo.AddMeasurement(measurement);
+                Goal goal = await goalRepo.GetGoal(goalId);
+                goal.MeasurementId = mesurement.Id;
+                await goalRepo.UpdateGoal(goal);
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Details", measurement) });
             }
 
-            ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name");
+            ViewData["GoalId"] = goalId;
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", measurement) });
 
         }
@@ -79,7 +79,6 @@ namespace VisionBoard.Controllers
                 var measurement = await MeasurementRepo.GetMeasurement((int)id);
                 if (measurement != null)
                 {
-                    //ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", mesurement.GoalId);
                     return View(measurement);
                 }
             }
@@ -90,7 +89,7 @@ namespace VisionBoard.Controllers
         // POST: Measurements/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,GoalId,Type,CurrentValue,TotalValue,Unit")] Measurement measurement)
+        public async Task<IActionResult> Edit(int id, [Bind("GoalId")] int goalId, [Bind("Id,Type,CurrentValue,TotalValue,Unit")] Measurement measurement)
         {
             if (id != measurement.Id)
             {
@@ -99,25 +98,12 @@ namespace VisionBoard.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    await MeasurementRepo.UpdateMeasurement(measurement);
-                    var measurements = await MeasurementRepo.GetAllMeasurements();
-                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexMeasurement", measurements) });
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MeasurementExists(measurement.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var mesurement = await MeasurementRepo.UpdateMeasurement(measurement);
+                Goal goal = await goalRepo.GetGoal(goalId);
+                goal.MeasurementId = mesurement.Id;
+                await goalRepo.UpdateGoal(goal);
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Details", measurement) });
             }
-            //ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(), "Id", "Name", mesurement.GoalId);
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", measurement) });
         }
 
@@ -129,8 +115,8 @@ namespace VisionBoard.Controllers
             {
                 return NotFound();
             }
-
             var measurement = await MeasurementRepo.GetMeasurement((int)id);
+
             if (measurement == null)
             {
                 return NotFound();
@@ -145,8 +131,7 @@ namespace VisionBoard.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await MeasurementRepo.DeleteMeasurement(id);
-            var measurements = await MeasurementRepo.GetAllMeasurements();
-            return Json(new { success = true, html = Helper.RenderRazorViewToString(this, "IndexMeasurement", measurements) });
+            return Json(new { success = true });
         }
 
 

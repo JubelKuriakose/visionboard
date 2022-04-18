@@ -130,7 +130,23 @@ AddorEditStep = form => {
         console.log(ex)
     }
 }
+//------------------*****------------------//
 
+//------------------AddOrRemoveMesurement-----------------//
+
+$('input:radio[name="TrackProgress"]').change(
+    function () {
+        if ($(this).is(':checked') && $(this).val() == 'Yes') {
+            var url = '/Measurements/Create?goalId=' + $('#GoalId').val();
+            showInPopup(url, 'Add Mesurement');
+        }
+        else {
+            var url = '/Measurements/Delete?id=' + $('#MeasurementId').val();
+            showInPopup(url, 'Delete Mesurement');
+        }
+    });
+
+//------------------*****------------------//
 
 //------------------ Add or Edit Measuerment------------------//
 
@@ -144,7 +160,7 @@ AddorEditMeasurement = form => {
             processData: false,
             success: function (res) {
                 if (res.isValid) {
-                    $('#list-measurement').html(res.html)
+                    $('#show-progress').html(res.html)
                     $('#form-modal .modal-body').html('');
                     $('#form-modal .modal-title').html('');
                     $('#form-modal').modal('hide');
@@ -333,7 +349,7 @@ function DeleteMeasurement(url) {
         url: url,
         success: function (res) {
             if (res.success) {
-                $('#list-measurement').html(res.html);
+                $('#show-progress').hide();
             }
             else {
                 $.notify(res.message, "error");
@@ -366,3 +382,4 @@ function DeleteStep(url) {
     $('#form-modal').modal('hide');
 }
 //------------------*****------------------//
+
