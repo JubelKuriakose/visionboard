@@ -4,13 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Net.Http.Headers;
 using VisionBoard.DAL;
 using VisionBoard.Models;
 using VisionBoard.Utilis;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+
 
 namespace VisionBoard.Controllers
 {
@@ -78,20 +83,11 @@ namespace VisionBoard.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,Picture,TagIds,RewardId,Status")] CreateGoal createGoal)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagIds,RewardId,Status")] CreateGoal createGoal)
         {
             Goal goal = null;
             if (ModelState.IsValid)
             {
-                string uniqueFileName = null;
-                string filePath = null;
-                if (createGoal.Picture != null)
-                {
-                    string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + createGoal.Picture.FileName;
-                    filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    createGoal.Picture.CopyTo(new FileStream(filePath, FileMode.Create));
-                }
 
                 List<GoalTags> goalTags = createGoal.TagIds.Select(t => new GoalTags() { GoalId = createGoal.Id, TagId = t }).ToList();
 
@@ -102,13 +98,13 @@ namespace VisionBoard.Controllers
                     StartOn = createGoal.StartOn,
                     EndingOn = createGoal.EndingOn,
                     Magnitude = createGoal.Magnitude,
-                    PictureUrl = filePath,
+                    PictureUrl = createGoal.PictureUrl,
                     GoalTags = goalTags,
                     RewardId = createGoal.RewardId
                 };
 
                 await goalsRepo.AddGoal(goal);
-                return RedirectToAction("Details", new { id = goal.Id });                
+                return RedirectToAction("Details", new { id = goal.Id });
             }
             ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
             ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name");
@@ -202,6 +198,38 @@ namespace VisionBoard.Controllers
         {
             return await goalsRepo.IsGoalExist(id);
         }
+
+        public IActionResult CustomCrop()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CustomCrop(string filename, IFormFile blob)
+        {
+            string newfileName = string.Empty;
+            string filepath = string.Empty;
+
+            try
+            {
+                using (var image = SixLabors.ImageSharp.Image.Load(blob.OpenReadStream()))
+                {
+                    string systemFileExtenstion = filename.Substring(filename.LastIndexOf('.'));
+
+                    image.Mutate(x => x.Resize(345, 289));
+                    newfileName = $"{"Photo_345_289"}_{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid():N}{systemFileExtenstion}";
+                    filepath = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images")).Root + $@"\{newfileName}";
+                    image.Save(filepath);
+
+                }
+                return Json(new { Message = "SUCCESS", SelectedImage = newfileName });
+            }
+            catch (Exception)
+            {
+                return Json(new { Message = "ERROR", SelectedImage = string.Empty });
+            }
+        }
+
 
 
     }
