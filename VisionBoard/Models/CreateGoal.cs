@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 #nullable disable
@@ -21,7 +20,7 @@ namespace VisionBoard.Models
         public DateTime StartOn { get; set; }
         public DateTime? EndingOn { get; set; }
         public int? Magnitude { get; set; }
-        public IFormFile Picture { get; set; }
+        public string PictureUrl { get; set; }
         public int? RewardId { get; set; }
         public bool Status { get; set; }
         public int[] TagIds { get; set; }

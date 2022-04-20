@@ -383,3 +383,69 @@ function DeleteStep(url) {
 }
 //------------------*****------------------//
 
+//------------------Crop Goal Image------------------//
+$('#form-modal').on('shown.bs.modal', function () {
+    $('#main-cropper').croppie('destroy');
+    var basic = $('#main-cropper').croppie
+        ({
+            viewport: { width: 310, height: 259 },
+            boundary: { width: 390, height: 327 },
+            url: '/images/noimage.png',
+            format: 'png' //'jpeg'|'png'|'webp'
+        });
+
+    // Change Event to Read file content from File input
+    $('#select-image').on('change', function () {
+        readFile(this);
+    });
+
+    // Upload button to Post Cropped Image to Store.
+    $('#btnupload').on('click', function () {
+        $('#main-cropper').croppie('result', 'blob').then(function (blob) {
+            var formData = new FormData();
+
+            formData.append('filename', 'FileName.png');
+            formData.append('blob', blob);
+            var myAppUrlSettings =
+            {
+                MyUsefulUrl: 'CustomCrop'
+            }
+
+            var request = new XMLHttpRequest();
+            request.open('POST', myAppUrlSettings.MyUsefulUrl);
+            request.send(formData);
+            request.onreadystatechange = function () { // Call function when the state changes.
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    var response = JSON.parse(request.responseText);
+
+                    if (response.message == "SUCCESS") {
+                        $("#goal-image").attr("src", "/images/" + response.selectedImage);
+                        $("#PictureUrl").val(response.selectedImage);
+                        $('#form-modal .modal-body').html('');
+                        $('#form-modal .modal-title').html('');
+                        $('#form-modal').modal('hide');
+                    }
+                    else if (response.message == "ERROR") {
+                        alert('Failed to crop the image');
+                    }
+                }
+            }
+        });
+    });
+});
+
+
+//Reading the contents of the specified Blob or File
+function readFile(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#main-cropper').croppie('bind', {
+                url: e.target.result
+            });
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+//------------------*****------------------//
