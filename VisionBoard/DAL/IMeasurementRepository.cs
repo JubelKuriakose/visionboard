@@ -16,7 +16,7 @@ namespace VisionBoard.DAL
 
         Task<Measurement> DeleteMeasurement(int measurementId);
 
-        bool IsMeasurementExist(int MeasurementId);
+        Task<bool> IsMeasurementExist(int MeasurementId);
 
     }
 }

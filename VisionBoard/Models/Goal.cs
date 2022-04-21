@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using VisionBoard.Utils;
 
 #nullable disable
 
@@ -14,8 +16,14 @@ namespace VisionBoard.Models
         }
 
         public int Id { get; set; }
+
+        [Required(ErrorMessage = AppConstants.NameRequiredMessage)]
+        [MaxLength(50, ErrorMessage = AppConstants.NameLengthMessage)]
         public string Name { get; set; }
+
+        [MaxLength(600, ErrorMessage = AppConstants.DescriptionLengthMessage)]
         public string Description { get; set; }
+
         public DateTime StartOn { get; set; }
         public DateTime? EndingOn { get; set; }
         public int? Magnitude { get; set; }

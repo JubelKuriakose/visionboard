@@ -16,7 +16,6 @@ using VisionBoard.Utilis;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
-
 namespace VisionBoard.Controllers
 {
     public class GoalsController : Controller
@@ -24,13 +23,15 @@ namespace VisionBoard.Controllers
         private readonly IGoalRepository goalsRepo;
         private readonly IRewardRepository rewardRepo;
         private readonly ITagRepository tagRepo;
+        private readonly IErrorLogRepository errorLogRepository;
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public GoalsController(IGoalRepository goalsRepo, IRewardRepository rewardRepo, ITagRepository tagRepo, IHostingEnvironment hostingEnvironment)
+        public GoalsController(IGoalRepository goalsRepo, IRewardRepository rewardRepo, ITagRepository tagRepo, IErrorLogRepository errorLogRepository, IHostingEnvironment hostingEnvironment)
         {
             this.goalsRepo = goalsRepo;
             this.rewardRepo = rewardRepo;
             this.tagRepo = tagRepo;
+            this.errorLogRepository = errorLogRepository;
             this.hostingEnvironment = hostingEnvironment;
         }
 
@@ -38,18 +39,27 @@ namespace VisionBoard.Controllers
         // GET: Goals
         public async Task<IActionResult> Index(int[] tagIds)
         {
-            var goals = await goalsRepo.GetAllGoals(tagIds);
-            ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name");
-            string requestType = Request.Headers[HeaderNames.XRequestedWith];
+            try
+            {
+                var goals = await goalsRepo.GetAllGoals(tagIds);
+                ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name");
+                string requestType = Request.Headers[HeaderNames.XRequestedWith];
 
-            if (requestType == "XMLHttpRequest")
-            {
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexGoals", goals) });
+                if (requestType == "XMLHttpRequest")
+                {
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexGoals", goals) });
+                }
+                else
+                {
+                    return View(goals);
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                return View(goals);
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
+            return View("../Shared/Error", null);
 
         }
 
@@ -57,27 +67,45 @@ namespace VisionBoard.Controllers
         // GET: Goals/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
-            var goal = await goalsRepo.GetGoal((int)id);
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var goal = await goalsRepo.GetGoal((int)id);
 
-            if (goal == null)
+                if (goal == null)
+                {
+                    return NotFound();
+                }
+
+                return View(goal);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
+            return View("../Shared/Error", null);
 
-            return View(goal);
         }
 
 
         // GET: Goals/Create
         public async Task<IActionResult> Create()
         {
-            ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name");
-            ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name");
-            return View();
+            try
+            {
+                ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name");
+                ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
 
 
@@ -85,51 +113,74 @@ namespace VisionBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagIds,RewardId,Status")] CreateGoal createGoal)
         {
-            Goal goal = null;
-            if (ModelState.IsValid)
+            try
             {
+                Goal goal = null;
+                List<GoalTags> goalTags = null;
 
-                List<GoalTags> goalTags = createGoal.TagIds.Select(t => new GoalTags() { GoalId = createGoal.Id, TagId = t }).ToList();
-
-                goal = new Goal()
+                if (ModelState.IsValid)
                 {
-                    Name = createGoal.Name,
-                    Description = createGoal.Description,
-                    StartOn = createGoal.StartOn,
-                    EndingOn = createGoal.EndingOn,
-                    Magnitude = createGoal.Magnitude,
-                    PictureUrl = createGoal.PictureUrl,
-                    GoalTags = goalTags,
-                    RewardId = createGoal.RewardId
-                };
+                    if (createGoal.TagIds.Length > 0)
+                    {
+                        goalTags = createGoal.TagIds.Select(t => new GoalTags() { GoalId = createGoal.Id, TagId = t }).ToList();
+                    }
 
-                await goalsRepo.AddGoal(goal);
-                return RedirectToAction("Details", new { id = goal.Id });
+                    goal = new Goal()
+                    {
+                        Name = createGoal.Name,
+                        Description = createGoal.Description,
+                        StartOn = createGoal.StartOn,
+                        EndingOn = createGoal.EndingOn,
+                        Magnitude = createGoal.Magnitude,
+                        PictureUrl = createGoal.PictureUrl,
+                        GoalTags = goalTags,
+                        RewardId = createGoal.RewardId
+                    };
+
+                    await goalsRepo.AddGoal(goal);
+                    return RedirectToAction("Details", new { id = goal.Id });
+                }
+                ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
+                ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name");
+                return View(goal);
+
             }
-            ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
-            ViewData["TagId"] = new SelectList(await tagRepo.GetAllTags(), "Id", "Name");
-            return View(goal);
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
 
 
         // GET: Goals/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var goal = await goalsRepo.GetGoal((int)id);
+
+                if (goal == null)
+                {
+                    return NotFound();
+                }
+                int[] TagIds = goal.GoalTags.Select(gt => gt.TagId).ToArray();
+                ViewData["TagId"] = new MultiSelectList(await tagRepo.GetAllTags(), "Id", "Name", TagIds);
+                ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
+                return View(goal);
             }
-
-            var goal = await goalsRepo.GetGoal((int)id);
-
-            if (goal == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
-            int[] TagIds = goal.GoalTags.Select(gt => gt.TagId).ToArray();
-            ViewData["TagId"] = new MultiSelectList(await tagRepo.GetAllTags(), "Id", "Name", TagIds);
-            ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
-            return View(goal);
+            return View("../Shared/Error", null);
+
         }
 
 
@@ -138,53 +189,61 @@ namespace VisionBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagId,RewardId,Status")] Goal goal)
         {
-            if (id != goal.Id)
+            try
             {
-                return NotFound();
-            }
+                if (id != goal.Id)
+                {
+                    return NotFound();
+                }
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
                     await goalsRepo.UpdateGoal(goal);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!await GoalExists(goal.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                int[] TagIds = goal.GoalTags.Select(gt => gt.TagId).ToArray();
+                ViewData["TagId"] = new MultiSelectList(await tagRepo.GetAllTags(), "Id", "Name", TagIds);
+                ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
+                return View(goal);
             }
-            int[] TagIds = goal.GoalTags.Select(gt => gt.TagId).ToArray();
-            ViewData["TagId"] = new MultiSelectList(await tagRepo.GetAllTags(), "Id", "Name", TagIds);
-            ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
-            return View(goal);
+            catch (Exception ex)
+            {
+                if (!await GoalExists(goal.Id))
+                {
+                    return NotFound();
+                }
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
 
 
         // GET: Goals/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                var goal = await goalsRepo.GetGoal((int)id);
+
+                if (goal == null)
+                {
+                    return NotFound();
+                }
+
+                return View(goal);
             }
-
-            var goal = await goalsRepo.GetGoal((int)id);
-
-            if (goal == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
+            return View("../Shared/Error", null);
 
-            return View(goal);
         }
 
 
@@ -193,30 +252,59 @@ namespace VisionBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var goal = await goalsRepo.DeleteGoal(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var goal = await goalsRepo.DeleteGoal(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
 
 
         private async Task<bool> GoalExists(int id)
         {
-            return await goalsRepo.IsGoalExist(id);
+            try
+            {
+                return await goalsRepo.IsGoalExist(id);
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return false;
+
         }
 
-        public IActionResult CustomCrop()
+
+        public async Task<IActionResult> CustomCrop()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
+
 
         [HttpPost]
-        public IActionResult CustomCrop(string filename, IFormFile blob)
+        public async Task<IActionResult> CustomCrop(string filename, IFormFile blob)
         {
             string newfileName = string.Empty;
             string filepath = string.Empty;
 
             try
             {
-                using (var image = SixLabors.ImageSharp.Image.Load(blob.OpenReadStream()))
+                using (var image = Image.Load(blob.OpenReadStream()))
                 {
                     string systemFileExtenstion = filename.Substring(filename.LastIndexOf('.'));
 
@@ -227,13 +315,15 @@ namespace VisionBoard.Controllers
 
                 }
                 return Json(new { Message = "SUCCESS", SelectedImage = newfileName });
-            }
-            catch (Exception)
-            {
-                return Json(new { Message = "ERROR", SelectedImage = string.Empty });
-            }
-        }
 
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return Json(new { Message = "ERROR", SelectedImage = string.Empty });
+
+        }
 
 
     }

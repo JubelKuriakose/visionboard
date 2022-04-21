@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VisionBoard.DAL;
 using VisionBoard.Models;
@@ -9,45 +10,74 @@ namespace VisionBoard.Controllers
     public class MeasurementsController : Controller
     {
         private readonly IGoalRepository goalRepo;
+        private readonly IErrorLogRepository errorLogRepository;
         private readonly IMeasurementRepository MeasurementRepo;
 
-        public MeasurementsController(IMeasurementRepository measurementRepo, IGoalRepository goalRepo)
+        public MeasurementsController(IMeasurementRepository measurementRepo, IGoalRepository goalRepo, IErrorLogRepository errorLogRepository)
         {
             MeasurementRepo = measurementRepo;
             this.goalRepo = goalRepo;
+            this.errorLogRepository = errorLogRepository;
         }
 
 
         // GET: Mesurements
         public async Task<IActionResult> Index()
         {
-            var measurements = await MeasurementRepo.GetAllMeasurements();
-            return View(measurements);
+            try
+            {
+                var measurements = await MeasurementRepo.GetAllMeasurements();
+                return View(measurements);
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+            
         }
 
 
         // GET: Mesurements/Details/5        
         public async Task<IActionResult> Details(int? id)
         {
-            if (id != null)
+            try
             {
-                var measurement = await MeasurementRepo.GetMeasurement((int)id);
-
-                if (measurement != null)
+                if (id != null)
                 {
-                    return View(measurement);
-                }
-            }
+                    var measurement = await MeasurementRepo.GetMeasurement((int)id);
 
-            return NotFound();
+                    if (measurement != null)
+                    {
+                        return View(measurement);
+                    }
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+            
         }
 
 
         // GET: Mesurements/Create
         public async Task<IActionResult> Create(int? goalId)
         {
-            ViewData["GoalId"] = goalId;
-            return View();
+            try
+            {
+                ViewData["GoalId"] = goalId;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+            
         }
 
 
@@ -56,17 +86,25 @@ namespace VisionBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int goalId, [Bind("Id,Type,CurrentValue,TotalValue,Unit")] Measurement measurement)
         {
-            if (ModelState.IsValid)
+            try
             {
-                Measurement mesurement = await MeasurementRepo.AddMeasurement(measurement);
-                Goal goal = await goalRepo.GetGoal(goalId);
-                goal.MeasurementId = mesurement.Id;
-                await goalRepo.UpdateGoal(goal);
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Details", measurement) });
-            }
+                if (ModelState.IsValid)
+                {
+                    Measurement mesurement = await MeasurementRepo.AddMeasurement(measurement);
+                    Goal goal = await goalRepo.GetGoal(goalId);
+                    goal.MeasurementId = mesurement.Id;
+                    await goalRepo.UpdateGoal(goal);
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Details", measurement) });
+                }
 
-            ViewData["GoalId"] = goalId;
-            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", measurement) });
+                ViewData["GoalId"] = goalId;
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", measurement) });
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);            
 
         }
 
@@ -74,15 +112,24 @@ namespace VisionBoard.Controllers
         // GET: Mesurements/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id != null)
+            try
             {
-                var measurement = await MeasurementRepo.GetMeasurement((int)id);
-                if (measurement != null)
+                if (id != null)
                 {
-                    return View(measurement);
+                    var measurement = await MeasurementRepo.GetMeasurement((int)id);
+                    if (measurement != null)
+                    {
+                        return View(measurement);
+                    }
                 }
+                return NotFound();
             }
-            return NotFound();
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+            
         }
 
 
@@ -91,38 +138,56 @@ namespace VisionBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("GoalId")] int goalId, [Bind("Id,Type,CurrentValue,TotalValue,Unit")] Measurement measurement)
         {
-            if (id != measurement.Id)
+            try
             {
-                return NotFound();
-            }
+                if (id != measurement.Id)
+                {
+                    return NotFound();
+                }
 
-            if (ModelState.IsValid)
-            {
-                var mesurement = await MeasurementRepo.UpdateMeasurement(measurement);
-                Goal goal = await goalRepo.GetGoal(goalId);
-                goal.MeasurementId = mesurement.Id;
-                await goalRepo.UpdateGoal(goal);
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Details", measurement) });
+                if (ModelState.IsValid)
+                {
+                    var mesurement = await MeasurementRepo.UpdateMeasurement(measurement);
+                    Goal goal = await goalRepo.GetGoal(goalId);
+                    goal.MeasurementId = mesurement.Id;
+                    await goalRepo.UpdateGoal(goal);
+                    return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Details", measurement) });
+                }
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", measurement) });
             }
-            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", measurement) });
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+            
         }
 
 
         // GET: Mesurements/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
-            var measurement = await MeasurementRepo.GetMeasurement((int)id);
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var measurement = await MeasurementRepo.GetMeasurement((int)id);
 
-            if (measurement == null)
+                if (measurement == null)
+                {
+                    return NotFound();
+                }
+
+                return View(measurement);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
-
-            return View(measurement);
+            return View("../Shared/Error", null);
+            
         }
 
 
@@ -130,14 +195,32 @@ namespace VisionBoard.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await MeasurementRepo.DeleteMeasurement(id);
-            return Json(new { success = true });
+            try
+            {
+                await MeasurementRepo.DeleteMeasurement(id);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+            
         }
 
 
-        private bool MeasurementExists(int id)
+        private async Task< bool> MeasurementExists(int id)
         {
-            return MeasurementRepo.IsMeasurementExist(id);
+            try
+            {
+                return await MeasurementRepo.IsMeasurementExist(id);
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return false;
+            
         }
 
 

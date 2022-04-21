@@ -30,6 +30,7 @@ namespace VisionBoard
             services.AddScoped<IStepRepository, StepRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IRewardRepository, RewardRepository>();
+            services.AddScoped<IErrorLogRepository, ErrorLogRepository>();
 
             var builder = services.AddControllersWithViews();
 
