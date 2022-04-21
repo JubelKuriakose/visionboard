@@ -126,6 +126,8 @@ namespace VisionBoard.Controllers
             {
                 return NotFound();
             }
+            int[] TagIds = goal.GoalTags.Select(gt => gt.TagId).ToArray();
+            ViewData["TagId"] = new MultiSelectList(await tagRepo.GetAllTags(), "Id", "Name", TagIds);
             ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
             return View(goal);
         }
@@ -160,6 +162,8 @@ namespace VisionBoard.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            int[] TagIds = goal.GoalTags.Select(gt => gt.TagId).ToArray();
+            ViewData["TagId"] = new MultiSelectList(await tagRepo.GetAllTags(), "Id", "Name", TagIds);
             ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
             return View(goal);
         }

@@ -4,62 +4,107 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Goal</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<div class="row mt-5">
+    <h3 class=" p-2">Edit Goal</h3>
+    <hr />
+    <div class="col-md-12">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="Name" class="control-label"></label>
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label asp-for="Description" class="control-label"></label>
+                                    <textarea asp-for="Description" rows="5" class="form-control"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="goal-img">
+                        <img src=@("~/images/" + (Model.PictureUrl ?? "noimage.png")) asp-append-version="true" name="PictureUrl" id="goal-image" class="goal-img">
+                        <input type="hidden" asp-for="PictureUrl" />
+                        <a onclick="showInPopup('@Url.Action("CustomCrop","Goals", new { source = "DropDown" }, Context.Request.Scheme)','Drag image to adjust')" class="edit-btn"><i class="fa-solid fa-lg fa-pen-to-square text-warning"></i></a>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="StartOn" class="control-label"></label>
+                                <input asp-for="StartOn" class="form-control" />
+                                <span asp-validation-for="StartOn" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="EndingOn" class="control-label"></label>
+                                <input asp-for="EndingOn" class="form-control" />
+                                <span asp-validation-for="EndingOn" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div label class="pt-1 control-label"><label for="Magnitude">Importance :</label></div>
+                                <div class="p-2"><input name="Magnitude" type="range" class="form-range w-75" value=@Model.Magnitude min="0" max="5" id="Magnitude" oninput="this.nextElementSibling.value = this.value"><output class="pl-2 font-weight-bold">@Model.Magnitude</output></div>
+                                <span asp-validation-for="Magnitude" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="pt-1">
+                                    <span for="TagIds" class="control-label">Tags </span>
+                                </div>
+                                <select id="tagDropDownList" name="TagIds" asp-items="ViewBag.TagId" multiple="multiple" class="form-control"></select>
+                                <a onclick="showInPopup('@Url.Action("Create", "Tags", new { source = "DropDown" }, Context.Request.Scheme)','Add Tag')" class="p-2"><i class="fa-solid fa-lg fa-circle-plus text-success"></i></a>
+                                @*<a onclick="EditTagFromDropdown('@Url.Action("Edit","Tags", new { source = "DropDown" }, Context.Request.Scheme)','Edit Tag')" class="p-2"><i class="fa-solid fa-eye text-info"></i></a>
+                                    <a onclick="DeleteTagFromDropdown('@Url.Action("Delete","Tags", new { source = "DropDown" }, Context.Request.Scheme)')" class="p-2"><i class="fa-solid fa-trash-can text-danger"></i></a>*@
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row align-items-end">
+                                <div class="col-md-8">
+                                    <label asp-for="RewardId" class="control-label"></label>
+                                    <select asp-for="RewardId" class="form-control" asp-items="ViewBag.RewardId"></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group pb-0">
+                                        <a onclick="showInPopup('@Url.Action("Create", "Rewards", new { source = "DropDown" }, Context.Request.Scheme)','Add Reward')" class="p-1"><i class="fa-solid fa-circle-plus fa-lg text-success"></i></a>
+                                        <a onclick="EditRewardFromDropdown('@Url.Action("Edit","Rewards", new { source = "DropDown" }, Context.Request.Scheme)','Edit Reward')" class="p-1"><i class="fa-solid fa-lg fa-pen-to-square text-warning"></i></a>
+                                        <a onclick="DeleteRewardFromDropdown('@Url.Action("Delete","Rewards", new { source = "DropDown" }, Context.Request.Scheme)')" class="p-1"><i class="fa-solid fa-lg fa-trash-can text-danger"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="StartOn" class="control-label"></label>
-                <input asp-for="StartOn" class="form-control" />
-                <span asp-validation-for="StartOn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndingOn" class="control-label"></label>
-                <input asp-for="EndingOn" class="form-control" />
-                <span asp-validation-for="EndingOn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Magnitude" class="control-label"></label>
-                <input asp-for="Magnitude" class="form-control" />
-                <span asp-validation-for="Magnitude" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PictureUrl" class="control-label"></label>
-                <input asp-for="PictureUrl" class="form-control" />
-                <span asp-validation-for="PictureUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                @*<label asp-for="TagId" class="control-label"></label>
-        <select asp-for="TagId" class="form-control" asp-items="ViewBag.TagId"></select>
-        <span asp-validation-for="TagId" class="text-danger"></span>*@
-            </div>
-            <div class="form-group">
-                <label asp-for="RewardId" class="control-label"></label>
-                <select asp-for="RewardId" class="form-control" asp-items="ViewBag.RewardId"></select>
-                <span asp-validation-for="RewardId" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <input type="submit" value="Update" class="btn btn-primary" />
+                    </div>
+                </div>
             </div>
         </form>
     </div>
@@ -71,4 +116,15 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            $('.custom-file-input').on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).next('.custom-file-label').html(fileName);
+            });
+        });
+
+        $('#tagDropDownList').multiselect();
+    </script>
 }
