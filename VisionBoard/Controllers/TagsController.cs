@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VisionBoard.DAL;
@@ -10,42 +11,71 @@ namespace VisionBoard.Controllers
     public class TagsController : Controller
     {
         private readonly ITagRepository tagRepository;
+        private readonly IErrorLogRepository errorLogRepository;
 
-        public TagsController(ITagRepository tagRepository)
+        public TagsController(ITagRepository tagRepository, IErrorLogRepository errorLogRepository)
         {
             this.tagRepository = tagRepository;
+            this.errorLogRepository = errorLogRepository;
         }
 
 
         // GET: Tags
         public async Task<IActionResult> Index()
         {
-            var tags = await tagRepository.GetAllTags();
-            return View(tags);
+            try
+            {
+                var tags = await tagRepository.GetAllTags();
+                return View(tags);
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
 
 
         // GET: Tags/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id != null)
+            try
             {
-                var tag = await tagRepository.GetTag((int)id);
-
-                if (tag != null)
+                if (id != null)
                 {
-                    return View(tag);
+                    var tag = await tagRepository.GetTag((int)id);
+
+                    if (tag != null)
+                    {
+                        return View(tag);
+                    }
                 }
+                return NotFound();
             }
-            return NotFound();
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
 
 
         // GET: Tags/Create
-        public IActionResult Create(string source)
+        public async Task<IActionResult> Create(string source)
         {
-            ViewBag.Source = source;
-            return View();
+            try
+            {
+                ViewBag.Source = source;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
 
 
@@ -54,22 +84,30 @@ namespace VisionBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(string source, [Bind("Id,Name,Colour,Status")] Tag tag)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var newTag = await tagRepository.AddTag(tag);
+                if (ModelState.IsValid)
+                {
+                    var newTag = await tagRepository.AddTag(tag);
 
-                if (source == "DropDown")
-                {
-                    return Json(new { isValid = true, Source = source, Id = newTag.Id, Name = newTag.Name });
+                    if (source == "DropDown")
+                    {
+                        return Json(new { isValid = true, Source = source, Id = newTag.Id, Name = newTag.Name });
+                    }
+                    else
+                    {
+                        var tags = await tagRepository.GetAllTags();
+                        return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
+                    }
                 }
-                else
-                {
-                    var tags = await tagRepository.GetAllTags();
-                    return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
-                }
+
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", tag) });
             }
-
-            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Create", tag) });
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
 
         }
 
@@ -77,18 +115,27 @@ namespace VisionBoard.Controllers
         // GET: Tags/Edit/5
         public async Task<IActionResult> Edit(int? id, string source)
         {
-            if (id != null)
+            try
             {
-                var tag = await tagRepository.GetTag((int)id);
-
-                if (tag != null)
+                if (id != null)
                 {
-                    ViewBag.Source = source;
-                    return View(tag);
-                }
-            }
+                    var tag = await tagRepository.GetTag((int)id);
 
-            return NotFound();
+                    if (tag != null)
+                    {
+                        ViewBag.Source = source;
+                        return View(tag);
+                    }
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
 
 
@@ -97,14 +144,14 @@ namespace VisionBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, string source, [Bind("Id,Name,Colour,Status")] Tag tag)
         {
-            if (id != tag.Id)
+            try
             {
-                return NotFound();
-            }
+                if (id != tag.Id)
+                {
+                    return NotFound();
+                }
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
                     var newTag = await tagRepository.UpdateTag(tag);
 
@@ -117,37 +164,46 @@ namespace VisionBoard.Controllers
                         var tags = await tagRepository.GetAllTags();
                         return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
                     }
+
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!await TagExists(tag.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", tag) });
             }
-            return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", tag) });
+            catch (Exception ex)
+            {
+                if (!await TagExists(tag.Id))
+                {
+                    return NotFound();
+                }
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
 
 
         // GET: Tags/Delete/5
         public async Task<IActionResult> Delete(int? id, string source)
         {
-            if (id != null)
+            try
             {
-                var tag = await tagRepository.GetTag((int)id);
-
-                if (tag != null)
+                if (id != null)
                 {
-                    ViewBag.Source = source;
-                    return View(tag);
+                    var tag = await tagRepository.GetTag((int)id);
+
+                    if (tag != null)
+                    {
+                        ViewBag.Source = source;
+                        return View(tag);
+                    }
                 }
+                return NotFound();
             }
-            return NotFound();
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return View("../Shared/Error", null);
+
         }
 
 
@@ -155,22 +211,40 @@ namespace VisionBoard.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id, string source)
         {
-            var newTag = await tagRepository.DeleteTag(id);
-            if (source == "DropDown")
+            try
             {
-                return Json(new { isValid = true, Source = source, Id = newTag.Id, Name = newTag.Name });
+                var newTag = await tagRepository.DeleteTag(id);
+                if (source == "DropDown")
+                {
+                    return Json(new { isValid = true, Source = source, Id = newTag.Id, Name = newTag.Name });
+                }
+                else
+                {
+                    var tags = await tagRepository.GetAllTags();
+                    return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var tags = await tagRepository.GetAllTags();
-                return Json(new { isValid = true, source = "Index", html = Helper.RenderRazorViewToString(this, "IndexTags", tags) });
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
+            return View("../Shared/Error", null);
+
         }
 
 
         private async Task<bool> TagExists(int id)
         {
-            return await tagRepository.IsTagExist(id);
+            try
+            {
+                return await tagRepository.IsTagExist(id);
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return false;
+
         }
 
 

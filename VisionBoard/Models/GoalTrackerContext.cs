@@ -20,6 +20,8 @@ namespace VisionBoard.Models
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<GoalTags> GoalTags { get; set; }
 
+        public virtual DbSet<ErrorLog> ErrorLogs { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -158,6 +160,23 @@ namespace VisionBoard.Models
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<ErrorLog>(entity =>
+            {
+                entity.ToTable("ErrorLog");
+                entity.Property(e => e.ClassName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MethodName)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ErrorMessage);
+
+                entity.Property(e => e.DateTime).HasColumnType("datetime");
             });
 
             OnModelCreatingPartial(modelBuilder);
