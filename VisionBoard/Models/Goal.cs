@@ -18,10 +18,10 @@ namespace VisionBoard.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = AppConstants.NameRequiredMessage)]
-        [MaxLength(300, ErrorMessage = AppConstants.NameLengthMessage)]
+        [MaxLength(50, ErrorMessage = AppConstants.NameLengthMessage)]
         public string Name { get; set; }
 
-        [MaxLength(300, ErrorMessage = AppConstants.DescriptionLengthMessage)]
+        [MaxLength(600, ErrorMessage = AppConstants.DescriptionLengthMessage)]
         public string Description { get; set; }
 
         public DateTime StartOn { get; set; }

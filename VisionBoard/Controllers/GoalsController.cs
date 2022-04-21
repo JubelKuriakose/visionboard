@@ -86,10 +86,14 @@ namespace VisionBoard.Controllers
         public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagIds,RewardId,Status")] CreateGoal createGoal)
         {
             Goal goal = null;
+            List<GoalTags> goalTags = null;
+
             if (ModelState.IsValid)
             {
-
-                List<GoalTags> goalTags = createGoal.TagIds.Select(t => new GoalTags() { GoalId = createGoal.Id, TagId = t }).ToList();
+                if (createGoal.TagIds.Length > 0)
+                {
+                    goalTags = createGoal.TagIds.Select(t => new GoalTags() { GoalId = createGoal.Id, TagId = t }).ToList();
+                }                
 
                 goal = new Goal()
                 {
