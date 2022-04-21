@@ -82,10 +82,13 @@ namespace VisionBoard.Controllers
         // POST: Tags/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string source, [Bind("Id,Name,Colour,Status")] Tag tag)
+        public async Task<IActionResult> Create(string source, [Bind("Id,Name,Colour")] Tag tag)
         {
             try
             {
+                //tag active or not
+                tag.Status = true;
+
                 if (ModelState.IsValid)
                 {
                     var newTag = await tagRepository.AddTag(tag);

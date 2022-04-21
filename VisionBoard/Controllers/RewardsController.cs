@@ -87,10 +87,12 @@ namespace VisionBoard.Controllers
         // POST: Rewards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string source, [Bind("Id,Name,Descrption,GoalId,PictureUrl,Status")] Reward reward)
+        public async Task<IActionResult> Create(string source, [Bind("Id,Name,Descrption,GoalId,PictureUrl")] Reward reward)
         {
             try
             {
+                //achieved reward or not
+                reward.Status = false;
                 if (ModelState.IsValid)
                 {
                     var newReward = await rewardsRepo.AddReward(reward);

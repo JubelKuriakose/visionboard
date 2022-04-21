@@ -48,7 +48,7 @@ namespace VisionBoard.Controllers
             {
                 if (id != null)
                 {
-                    var step = stepsRepo.GetStep((int)id);
+                    var step = await stepsRepo.GetStep((int)id);
                     if (step != null)
                     {
                         return View(step);
@@ -98,10 +98,12 @@ namespace VisionBoard.Controllers
         // POST: Steps/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int? currentGoalId, [Bind("Id,Name,Description,Weight,DueDate,Status,GoalId")] Step step)
+        public async Task<IActionResult> Create(int? currentGoalId, [Bind("Id,Name,Description,Weight,DueDate,GoalId")] Step step)
         {
             try
             {
+                step.Status = true;
+
                 if (ModelState.IsValid)
                 {
                     await stepsRepo.AddStep(step);

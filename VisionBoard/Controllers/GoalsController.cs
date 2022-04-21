@@ -111,12 +111,14 @@ namespace VisionBoard.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagIds,RewardId,Status")] CreateGoal createGoal)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagIds,RewardId")] CreateGoal createGoal)
         {
             try
             {
                 Goal goal = null;
                 List<GoalTags> goalTags = null;
+                //goal completed or not
+                createGoal.Status = false;
 
                 if (ModelState.IsValid)
                 {
