@@ -37,7 +37,7 @@ namespace VisionBoard.Models
             modelBuilder.Entity<Goal>(entity =>
             {
                 entity.Property(e => e.Description)
-                    .HasMaxLength(200)
+                    .HasMaxLength(600)
                     .IsUnicode(false);
 
                 entity.Property(e => e.EndingOn).HasColumnType("datetime");
@@ -87,8 +87,8 @@ namespace VisionBoard.Models
             {
                 entity.ToTable("Reward");
 
-                entity.Property(e => e.Descrption)
-                    .HasMaxLength(200)
+                entity.Property(e => e.Description)
+                    .HasMaxLength(600)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Name)
@@ -111,7 +111,7 @@ namespace VisionBoard.Models
             modelBuilder.Entity<Step>(entity =>
             {
                 entity.Property(e => e.Description)
-                    .HasMaxLength(250)
+                    .HasMaxLength(600)
                     .IsUnicode(false);
 
                 entity.Property(e => e.DueDate).HasColumnType("datetime");

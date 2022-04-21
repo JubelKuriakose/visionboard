@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-#nullable disable
+﻿#nullable disable
 
 namespace VisionBoard.Models
 {
@@ -9,7 +7,7 @@ namespace VisionBoard.Models
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Descrption { get; set; }
+        public string Description { get; set; }
         public string PictureUrl { get; set; }
         public bool Status { get; set; }
 
