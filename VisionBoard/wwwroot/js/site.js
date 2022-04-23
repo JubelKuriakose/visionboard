@@ -449,3 +449,20 @@ function readFile(input) {
     }
 }
 //------------------*****------------------//
+
+//------------------Use Other Unit------------------//
+function NewUnit(selectedOption) {
+    var textUnit = $('#text-unit');
+    var selectUnit = $('#select-unit');
+
+    if (selectedOption == 'others') {
+        textUnit.val("");
+        textUnit.show();
+        selectUnit.hide();
+    }
+    else {
+        textUnit.hide()
+        textUnit.val(selectUnit.val());
+    }        
+}
+//------------------*****------------------//

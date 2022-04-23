@@ -6,37 +6,27 @@
 }
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 p-3">
         <form asp-controller="Tags" asp-action="Create" onsubmit="return AddorEditTag(this);">
             <input type="hidden" name="source" id="source" value="@ViewBag.Source" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-9">
                     <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label asp-for="Colour" class="control-label"></label>
-                        <input asp-for="Colour" class="form-control" />
+                        @Html.EditorFor(model => model.Colour, new { htmlAttributes = new { @class = "form-control p-0 w-2", required = "required", type = "color" } })
                         <span asp-validation-for="Colour" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" asp-for="Status" />
-                            @Html.DisplayNameFor(model => model.Status)
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group" align="right">
+            </div>            
+            <div class="form-group mt-3" >
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>

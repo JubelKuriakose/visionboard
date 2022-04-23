@@ -145,7 +145,7 @@ namespace VisionBoard.Controllers
         // POST: Tags/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string source, [Bind("Id,Name,Colour,Status")] Tag tag)
+        public async Task<IActionResult> Edit(int id, string source, [Bind("Id,Name,Colour")] Tag tag)
         {
             try
             {
@@ -156,6 +156,7 @@ namespace VisionBoard.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    tag.Status = true;
                     var newTag = await tagRepository.UpdateTag(tag);
 
                     if (source == "DropDown")

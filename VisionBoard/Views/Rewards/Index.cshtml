@@ -3,9 +3,14 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<h1>Index</h1>
-
-<div id="list-rewards" class="rewards-table">
-    @await Html.PartialAsync("IndexRewards", Model)
+<div class="mt-4">
+    <h2>Rewards</h2>
+    <div class="mt-4">
+        <div id="list-rewards" class="rewards-table">
+            @await Html.PartialAsync("IndexRewards", Model)
+        </div>
+    </div>
 </div>
+
+
+

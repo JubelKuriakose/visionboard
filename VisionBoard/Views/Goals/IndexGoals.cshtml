@@ -11,7 +11,7 @@
                 <div style="float:right">
                     @foreach (GoalTags goaltag in goal.GoalTags)
                     {
-                        <span class="badge" style="padding:5px;background-color: @goaltag.Tag.Colour">
+                        <span class="badge p-2" style="background-color: @goaltag.Tag.Colour">
                             @goaltag.Tag.Name
                         </span>
                     }

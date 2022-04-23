@@ -51,7 +51,6 @@
                 </td>
                 <td>
                     <a onclick="showInPopup('@Url.Action("Edit","Steps",new { id = @item.Id },Context.Request.Scheme)','Edit Step')"><i class="fa-solid fa-pen-to-square text-warning"></i></a>
-                    @*<a asp-action="Details" asp-route-id="@item.Id"><i class="fa-solid fa-eye text-info"></i></a>&nbsp;|&nbsp;*@
                     <a onclick="showInPopup('@Url.Action("Details","Steps", new { id = @item.Id }, Context.Request.Scheme)','View Step')"><i class="fa-solid fa-eye text-info pl-2"></i></a>
                     <a onclick="showInPopup('@Url.Action("Delete","Steps", new { id = @item.Id }, Context.Request.Scheme)','Delete Step')"><i class="fa-solid fa-trash-can text-danger pl-2"></i></a>
                 </td>
