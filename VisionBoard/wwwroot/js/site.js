@@ -425,15 +425,16 @@ $('#form-modal').on('shown.bs.modal', function () {
                         var response = JSON.parse(request.responseText);
 
                         if (response.message == "SUCCESS") {
-                            if (response.source == "RewardImage") {
+                            if (response.source == "RewardImage" || response.source == "DropDown") {
                                 $("#reward-img").attr("src", "/images/" + response.selectedImage);
-                                $("#PictureUrl").val(response.selectedImage);
+                                $("#reward-picture-url").val(response.selectedImage);
                                 $('#crop-reward-image').hide();
                                 $('#reward-img').show();
                                 $('#reward-img-edit').show();
                             }
                             else if (response.source == "GoalImage") {
                                 $("#goal-image").attr("src", "/images/" + response.selectedImage);
+                                $("#PictureUrl").val(response.selectedImage);
                                 $('#form-modal .modal-body').html('');
                                 $('#form-modal .modal-title').html('');
                                 $('#form-modal').modal('hide');

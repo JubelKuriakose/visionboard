@@ -25,7 +25,7 @@ namespace VisionBoard.Controllers
 
 
         // GET: Steps
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? goalId)
         {
             try
             {
@@ -72,7 +72,8 @@ namespace VisionBoard.Controllers
             {
                 if (goalId == null)
                 {
-                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name");                    
+                    ViewData["CurrentGoalId"] = goalId;
+                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name");
                 }
                 else
                 {
@@ -102,7 +103,7 @@ namespace VisionBoard.Controllers
         {
             try
             {
-                step.Status = true;
+                step.Status = false;
 
                 if (ModelState.IsValid)
                 {
@@ -115,6 +116,7 @@ namespace VisionBoard.Controllers
                     }
                     else
                     {
+                        ViewData["CurrentGoalId"] = currentGoalId;
                         steps = await stepsRepo.GetAllSteps((int)currentGoalId);
                     }
 
@@ -128,9 +130,10 @@ namespace VisionBoard.Controllers
                 else
                 {
                     IEnumerable<Goal> goal = new List<Goal>()
-                {
-                    await goalRepo.GetGoal((int)currentGoalId)
-                };
+                    {
+                        await goalRepo.GetGoal((int)currentGoalId)
+                    };
+                    ViewData["CurrentGoalId"] = currentGoalId;
                     ViewData["GoalId"] = new SelectList(goal, "Id", "Name");
                 }
 
@@ -185,7 +188,7 @@ namespace VisionBoard.Controllers
                 if (ModelState.IsValid)
                 {
                     await stepsRepo.UpdateStep(step);
-                    var steps = await stepsRepo.GetAllSteps();
+                    var steps = await stepsRepo.GetAllSteps(step.GoalId);
                     return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexSteps", steps) });
                 }
                 ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name", step.GoalId);

@@ -8,7 +8,7 @@
     <h3 class=" p-2">Edit Goal</h3>
     <hr />
     <div class="col-md-12">
-        <form asp-action="Create" enctype="multipart/form-data">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
                 <div class="col-md-8">
@@ -37,7 +37,7 @@
                     <div class="goal-img">
                         <img src=@("~/images/" + (Model.PictureUrl ?? "noimage.png")) asp-append-version="true" name="PictureUrl" id="goal-image" class="goal-img">
                         <input type="hidden" asp-for="PictureUrl" />
-                        <a onclick="showInPopup('@Url.Action("CustomCrop","Goals", new { source = "DropDown" }, Context.Request.Scheme)','Drag image to adjust')" class="edit-btn"><i class="fa-solid fa-lg fa-pen-to-square text-warning"></i></a>
+                        <a onclick="showInPopup('@Url.Action("CustomCrop","Media", new { source = "GoalImage" }, Context.Request.Scheme)','Drag image to adjust')" class="edit-btn"><i class="fa-solid fa-lg fa-pen-to-square text-warning"></i></a>
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <div label class="pt-1 control-label"><label for="Magnitude">Importance :</label></div>
+                                <div label class="pt-1 control-label"><label for="Magnitude">Importance </label></div>
                                 <div class="p-2"><input name="Magnitude" type="range" class="form-range w-75" value=@Model.Magnitude min="0" max="5" id="Magnitude" oninput="this.nextElementSibling.value = this.value"><output class="pl-2 font-weight-bold">@Model.Magnitude</output></div>
                                 <span asp-validation-for="Magnitude" class="text-danger"></span>
                             </div>
