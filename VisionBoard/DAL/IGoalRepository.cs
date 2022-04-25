@@ -8,6 +8,8 @@ namespace VisionBoard.DAL
     {
         Task<IEnumerable<Goal>> GetAllGoals(int[] tagIds);
 
+        Task<IEnumerable<Goal>> GetAllGoalsWithoutInnerObjects();
+
         Task<Goal> GetGoal(int goalId);
 
         Task<Goal> AddGoal(Goal goal);

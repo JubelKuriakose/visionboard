@@ -72,7 +72,7 @@ namespace VisionBoard.Controllers
             {
                 if (goalId == null)
                 {
-                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name");
+                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name");                    
                 }
                 else
                 {
@@ -123,7 +123,7 @@ namespace VisionBoard.Controllers
 
                 if (currentGoalId == null)
                 {
-                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name");
+                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name");
                 }
                 else
                 {
@@ -155,7 +155,7 @@ namespace VisionBoard.Controllers
                     var step = await stepsRepo.GetStep((int)id);
                     if (step != null)
                     {
-                        ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name", step.GoalId);
+                        ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name", step.GoalId);
                         return View(step);
                     }
                 }
@@ -188,7 +188,7 @@ namespace VisionBoard.Controllers
                     var steps = await stepsRepo.GetAllSteps();
                     return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexSteps", steps) });
                 }
-                ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name", step.GoalId);
+                ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name", step.GoalId);
                 return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", step) });
             }
             catch (Exception ex)

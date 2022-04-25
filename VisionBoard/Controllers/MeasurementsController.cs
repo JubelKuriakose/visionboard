@@ -34,7 +34,7 @@ namespace VisionBoard.Controllers
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return View("../Shared/Error", null);
-            
+
         }
 
 
@@ -60,7 +60,7 @@ namespace VisionBoard.Controllers
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return View("../Shared/Error", null);
-            
+
         }
 
 
@@ -77,7 +77,7 @@ namespace VisionBoard.Controllers
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return View("../Shared/Error", null);
-            
+
         }
 
 
@@ -104,7 +104,7 @@ namespace VisionBoard.Controllers
             {
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
-            return View("../Shared/Error", null);            
+            return View("../Shared/Error", null);
 
         }
 
@@ -129,7 +129,7 @@ namespace VisionBoard.Controllers
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return View("../Shared/Error", null);
-            
+
         }
 
 
@@ -144,6 +144,7 @@ namespace VisionBoard.Controllers
                 {
                     return NotFound();
                 }
+                ViewData["GoalId"] = goalId;
 
                 if (ModelState.IsValid)
                 {
@@ -160,7 +161,7 @@ namespace VisionBoard.Controllers
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return View("../Shared/Error", null);
-            
+
         }
 
 
@@ -187,7 +188,7 @@ namespace VisionBoard.Controllers
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return View("../Shared/Error", null);
-            
+
         }
 
 
@@ -205,11 +206,11 @@ namespace VisionBoard.Controllers
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return View("../Shared/Error", null);
-            
+
         }
 
 
-        private async Task< bool> MeasurementExists(int id)
+        private async Task<bool> MeasurementExists(int id)
         {
             try
             {
@@ -220,7 +221,7 @@ namespace VisionBoard.Controllers
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return false;
-            
+
         }
 
 

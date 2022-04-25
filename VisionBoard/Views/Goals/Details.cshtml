@@ -83,7 +83,7 @@
                         <div class="col-md-12">
                             <span class="label font-weight-bold">Track Progress : </span>
                             <label class="radio-inline pl-2">
-                                <input id="abc" type="radio" name="TrackProgress" @(Model.Measurement != null ? "Checked" : "") value="Yes">Yes
+                                <input type="radio" name="TrackProgress" @(Model.Measurement != null ? "Checked" : "") value="Yes">Yes
                             </label>
                             <label class="radio-inline pl-2">
                                 <input type="radio" name="TrackProgress" value="No" @(Model.Measurement == null ? "Checked" : "")>No

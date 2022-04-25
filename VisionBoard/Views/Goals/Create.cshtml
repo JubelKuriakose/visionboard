@@ -37,7 +37,7 @@
                     <div class="goal-img">
                         <img src="~/images/noimage.png" asp-append-version="true" name="PictureUrl" id="goal-image" class="goal-img">
                         <input type="hidden" asp-for="PictureUrl" />
-                        <a onclick="showInPopup('@Url.Action("CustomCrop","Goals", new { source = "DropDown" }, Context.Request.Scheme)','Drag image to adjust')" class="edit-btn"><i class="fa-solid fa-lg fa-pen-to-square text-warning"></i></a>
+                        <a onclick="showInPopup('@Url.Action("CustomCrop","Media", new { source = "GoalImage" }, Context.Request.Scheme)','Drag image to adjust')" class="edit-btn"><i class="fa-solid fa-lg fa-pen-to-square text-warning"></i></a>
                     </div>
                 </div>
             </div>

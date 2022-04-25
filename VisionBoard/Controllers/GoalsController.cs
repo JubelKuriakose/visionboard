@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Net.Http.Headers;
 using VisionBoard.DAL;
 using VisionBoard.Models;
 using VisionBoard.Utilis;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 
 namespace VisionBoard.Controllers
 {
@@ -279,51 +273,6 @@ namespace VisionBoard.Controllers
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return false;
-
-        }
-
-
-        public async Task<IActionResult> CustomCrop()
-        {
-            try
-            {
-                return View();
-            }
-            catch (Exception ex)
-            {
-                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
-            }
-            return View("../Shared/Error", null);
-
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> CustomCrop(string filename, IFormFile blob)
-        {
-            string newfileName = string.Empty;
-            string filepath = string.Empty;
-
-            try
-            {
-                using (var image = Image.Load(blob.OpenReadStream()))
-                {
-                    string systemFileExtenstion = filename.Substring(filename.LastIndexOf('.'));
-
-                    image.Mutate(x => x.Resize(345, 289));
-                    newfileName = $"{"Photo_345_289"}_{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid():N}{systemFileExtenstion}";
-                    filepath = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images")).Root + $@"\{newfileName}";
-                    image.Save(filepath);
-
-                }
-                return Json(new { Message = "SUCCESS", SelectedImage = newfileName });
-
-            }
-            catch (Exception ex)
-            {
-                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
-            }
-            return Json(new { Message = "ERROR", SelectedImage = string.Empty });
 
         }
 

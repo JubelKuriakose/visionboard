@@ -31,7 +31,7 @@ namespace VisionBoard.DAL
             {
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
-            return null; 
+            return null;
         }
 
 
@@ -52,7 +52,22 @@ namespace VisionBoard.DAL
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return null;
-            
+
+        }
+
+
+        public async Task<IEnumerable<Goal>> GetAllGoalsWithoutInnerObjects()
+        {
+            try
+            {
+                return await dBContext.Goals.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
+            }
+            return null;
+
         }
 
 
@@ -78,7 +93,7 @@ namespace VisionBoard.DAL
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return null;
-            
+
         }
 
 
@@ -93,7 +108,7 @@ namespace VisionBoard.DAL
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return null;
-            
+
         }
 
 
