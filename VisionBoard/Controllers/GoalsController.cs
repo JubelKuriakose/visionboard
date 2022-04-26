@@ -183,7 +183,7 @@ namespace VisionBoard.Controllers
         // POST: Goals/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagId,RewardId,Status")] Goal goal)
+        public async Task<IActionResult> Edit(int id, int[] TagIds,[Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagId,RewardId,Status")] Goal goal)
         {
             try
             {
@@ -194,10 +194,14 @@ namespace VisionBoard.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    if (TagIds.Length > 0)
+                    {
+                        goal.GoalTags = TagIds.Select(t => new GoalTags() { GoalId = goal.Id, TagId = t }).ToList();
+                    }
                     await goalsRepo.UpdateGoal(goal);
                     return RedirectToAction(nameof(Index));
                 }
-                int[] TagIds = goal.GoalTags.Select(gt => gt.TagId).ToArray();
+                TagIds = goal.GoalTags.Select(gt => gt.TagId).ToArray();
                 ViewData["TagId"] = new MultiSelectList(await tagRepo.GetAllTags(), "Id", "Name", TagIds);
                 ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
                 return View(goal);
