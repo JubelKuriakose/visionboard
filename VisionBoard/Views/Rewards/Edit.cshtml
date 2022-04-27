@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <div class="reward-img">
-                        <img src="~/images/reward_noimage.png" asp-append-version="true" id="reward-img">
+                        <img src=@("../../images/" + (Model.PictureUrl ?? "reward_noimage.png"))asp-append-version="true" id="reward-img">
                         <input type="hidden" id="reward-picture-url" name="PictureUrl" value="reward_noimage.png" />
                         <a onclick="ShowCustomCrop()" class="reward-img-edit"><i class="fa-solid fa-lg fa-pen-to-square text-warning"></i></a>
                     </div>

@@ -183,7 +183,7 @@ namespace VisionBoard.Controllers
         // POST: Goals/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, int[] TagIds,[Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagId,RewardId,Status")] Goal goal)
+        public async Task<IActionResult> Edit(int id, int[] TagIds,[Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,MeasurementId,TagId,RewardId,Status")] Goal goal)
         {
             try
             {

@@ -4,11 +4,13 @@
     ViewData["Title"] = "Edit";
 }
 
+
 <div class="row mt-5">
     <h3 class=" p-2">Edit Goal</h3>
     <hr />
     <div class="col-md-12">
         <form asp-action="Edit" enctype="multipart/form-data">
+            @Html.Hidden("MeasurementId", Model.MeasurementId)
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
                 <div class="col-md-8">
@@ -75,7 +77,7 @@
                                 <select id="tagDropDownList" name="TagIds" asp-items="ViewBag.TagId" multiple="multiple" class="form-control"></select>
                                 <a onclick="showInPopup('@Url.Action("Create", "Tags", new { source = "DropDown" }, Context.Request.Scheme)','Add Tag')" class="p-2"><i class="fa-solid fa-lg fa-circle-plus text-success"></i></a>
                                 @*<a onclick="EditTagFromDropdown('@Url.Action("Edit","Tags", new { source = "DropDown" }, Context.Request.Scheme)','Edit Tag')" class="p-2"><i class="fa-solid fa-eye text-info"></i></a>
-                                    <a onclick="DeleteTagFromDropdown('@Url.Action("Delete","Tags", new { source = "DropDown" }, Context.Request.Scheme)')" class="p-2"><i class="fa-solid fa-trash-can text-danger"></i></a>*@
+                            <a onclick="DeleteTagFromDropdown('@Url.Action("Delete","Tags", new { source = "DropDown" }, Context.Request.Scheme)')" class="p-2"><i class="fa-solid fa-trash-can text-danger"></i></a>*@
 
 
                             </div>
