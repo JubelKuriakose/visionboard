@@ -22,6 +22,7 @@ namespace VisionBoard.Models
         [Range(1, 40000000, ErrorMessage = AppConstants.WeightLengthMessage)]
         public int Weight { get; set; }
 
+        [Display(Name = "Due Date")]
         public DateTime? DueDate { get; set; }
         public bool Status { get; set; }
 

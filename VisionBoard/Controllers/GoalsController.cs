@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Net.Http.Headers;
 using VisionBoard.DAL;
 using VisionBoard.Models;
 using VisionBoard.Utilis;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 
 namespace VisionBoard.Controllers
 {
@@ -111,12 +105,14 @@ namespace VisionBoard.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagIds,RewardId,Status")] CreateGoal createGoal)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagIds,RewardId")] CreateGoal createGoal)
         {
             try
             {
                 Goal goal = null;
                 List<GoalTags> goalTags = null;
+                //goal completed or not
+                createGoal.Status = false;
 
                 if (ModelState.IsValid)
                 {
@@ -187,7 +183,7 @@ namespace VisionBoard.Controllers
         // POST: Goals/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,TagId,RewardId,Status")] Goal goal)
+        public async Task<IActionResult> Edit(int id, int[] TagIds,[Bind("Id,Name,Description,StartOn,EndingOn,Magnitude,PictureUrl,MeasurementId,TagId,RewardId,Status")] Goal goal)
         {
             try
             {
@@ -198,10 +194,14 @@ namespace VisionBoard.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    if (TagIds.Length > 0)
+                    {
+                        goal.GoalTags = TagIds.Select(t => new GoalTags() { GoalId = goal.Id, TagId = t }).ToList();
+                    }
                     await goalsRepo.UpdateGoal(goal);
                     return RedirectToAction(nameof(Index));
                 }
-                int[] TagIds = goal.GoalTags.Select(gt => gt.TagId).ToArray();
+                TagIds = goal.GoalTags.Select(gt => gt.TagId).ToArray();
                 ViewData["TagId"] = new MultiSelectList(await tagRepo.GetAllTags(), "Id", "Name", TagIds);
                 ViewData["RewardId"] = new SelectList(await rewardRepo.GetAllRewards(), "Id", "Name", goal.RewardId);
                 return View(goal);
@@ -277,51 +277,6 @@ namespace VisionBoard.Controllers
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return false;
-
-        }
-
-
-        public async Task<IActionResult> CustomCrop()
-        {
-            try
-            {
-                return View();
-            }
-            catch (Exception ex)
-            {
-                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
-            }
-            return View("../Shared/Error", null);
-
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> CustomCrop(string filename, IFormFile blob)
-        {
-            string newfileName = string.Empty;
-            string filepath = string.Empty;
-
-            try
-            {
-                using (var image = Image.Load(blob.OpenReadStream()))
-                {
-                    string systemFileExtenstion = filename.Substring(filename.LastIndexOf('.'));
-
-                    image.Mutate(x => x.Resize(345, 289));
-                    newfileName = $"{"Photo_345_289"}_{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid():N}{systemFileExtenstion}";
-                    filepath = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images")).Root + $@"\{newfileName}";
-                    image.Save(filepath);
-
-                }
-                return Json(new { Message = "SUCCESS", SelectedImage = newfileName });
-
-            }
-            catch (Exception ex)
-            {
-                await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
-            }
-            return Json(new { Message = "ERROR", SelectedImage = string.Empty });
 
         }
 

@@ -1,0 +1,8 @@
+﻿CREATE TABLE [dbo].[GoalTags] (
+    [GoalId] INT NOT NULL,
+    [TagId]  INT NOT NULL,
+    CONSTRAINT [PK_GT] PRIMARY KEY CLUSTERED ([GoalId] ASC, [TagId] ASC),
+    CONSTRAINT [FK_Goal] FOREIGN KEY ([GoalId]) REFERENCES [dbo].[Goals] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_Tag] FOREIGN KEY ([TagId]) REFERENCES [dbo].[Tags] ([Id]) ON DELETE CASCADE
+);
+

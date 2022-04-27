@@ -11,7 +11,7 @@
                 <div style="float:right">
                     @foreach (GoalTags goaltag in goal.GoalTags)
                     {
-                        <span class="badge" style="padding:5px;background-color: @goaltag.Tag.Colour">
+                        <span class="badge p-2" style="background-color: @goaltag.Tag.Colour">
                             @goaltag.Tag.Name
                         </span>
                     }
@@ -24,7 +24,7 @@
 
             <div class="card-footer" style="height:100%">
                 <h6 class="card-subtitle mb-2 text-muted">Started On : @goal.StartOn</h6>
-                <h6 class="card-subtitle mb-2 text-muted">Due On : @goal.StartOn</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Due On : @goal.EndingOn</h6>
                 <h5 class="card-subtitle mb-2 text-muted">@(goal.Reward != null? "Reward : " + goal.Reward.Name : "")</h5><br />
 
                 @if (goal.Measurement != null)

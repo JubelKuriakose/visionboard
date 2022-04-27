@@ -1,6 +1,5 @@
 ﻿using VisionBoard.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -32,7 +31,7 @@ namespace VisionBoard.DAL
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return null;
-            
+
         }
 
 
@@ -53,7 +52,7 @@ namespace VisionBoard.DAL
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return null;
-            
+
         }
 
 
@@ -61,14 +60,14 @@ namespace VisionBoard.DAL
         {
             try
             {
-                return await dBContext.Rewards.ToListAsync();
+                return await dBContext.Rewards.Include(r => r.Goal).ToListAsync();
             }
             catch (Exception ex)
             {
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return null;
-            
+
         }
 
 
@@ -82,8 +81,8 @@ namespace VisionBoard.DAL
             {
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
-            return null;            
-            
+            return null;
+
         }
 
 
@@ -101,7 +100,7 @@ namespace VisionBoard.DAL
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return null;
-            
+
         }
 
 
@@ -116,7 +115,7 @@ namespace VisionBoard.DAL
                 await errorLogRepository.AddErrorLog(ex.TargetSite.ReflectedType.DeclaringType.Name, ex.TargetSite.ReflectedType.Name, ex.Message);
             }
             return true;
-            
+
         }
 
 

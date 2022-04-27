@@ -7,22 +7,19 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            <th width="20%">
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th>
+            <th width="35%">
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PictureUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
+            <th width="20%">
                 @Html.DisplayNameFor(model => model.Goal)
             </th>
-            <th>
+            <th width="10%">
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th width="15%">
                 <a onclick="showInPopup('@Url.Action("Create", "Rewards", null, Context.Request.Scheme)','Add Reward')" class="btn btn-success text-white"> Add Reward</a>
             </th>
             <th></th>
@@ -35,22 +32,17 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td>
+                <td class="col-description">
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
+                <td>@(item.Goal==null?"":item.Goal.Name)</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PictureUrl)
+                    @Html.Label("Status", item.Status ? "Completed" : "Pending")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Goal.Name)
-                </td>
-                <td>
-                    <a onclick="showInPopup('@Url.Action("Edit","Rewards", new { id = @item.Id }, Context.Request.Scheme)','Edit Reward')" class="btn-sm btn-light">Edit</a>|
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a onclick="showInPopup('@Url.Action("Delete","Rewards", new { id = @item.Id }, Context.Request.Scheme)','Delete Reward')" class="btn-sm btn-light">Delete</a>|
+                    <a onclick="showInPopup('@Url.Action("Edit","Rewards",new { id = @item.Id },Context.Request.Scheme)','Edit Reward')"><i class="fa-solid fa-pen-to-square text-warning"></i></a>
+                    <a onclick="showInPopup('@Url.Action("Details","Rewards", new { id = @item.Id }, Context.Request.Scheme)','View Reward')"><i class="fa-solid fa-eye text-info pl-2"></i></a>
+                    <a onclick="showInPopup('@Url.Action("Delete","Rewards", new { id = @item.Id }, Context.Request.Scheme)','Delete Reward')"><i class="fa-solid fa-trash-can text-danger pl-2"></i></a>
                 </td>
             </tr>
         }

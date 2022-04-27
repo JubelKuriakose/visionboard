@@ -113,17 +113,32 @@ body {
     height: 259px;
     position: relative;
 }
-/*-----*/
+    /*-----*/
+    /* Add Goal add image section*/
+
+    .goal-img .edit-btn {
+        position: absolute;
+        top: 7%;
+        left: 93%;
+        transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        font-size: 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        text-align: center;
+    }
+/*------------------*/
 /* Add Goal add image section*/
 .croppie-container {
     width: 100%;
     height: 80%;
 }
 
-.goal-img .edit-btn {
+.reward-img-edit {
     position: absolute;
-    top: 8%;
-    left: 92%;
+    top: 7%;
+    left: 82%;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     font-size: 20px;
@@ -137,3 +152,14 @@ body {
     display: none;
 }
 /*------------------*/
+/*description column remove overflow*/
+
+.col-description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    height: 90px;
+    -webkit-box-orient: vertical;
+}
+/*------------------------*/

@@ -25,7 +25,7 @@ namespace VisionBoard.Controllers
 
 
         // GET: Steps
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? goalId)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace VisionBoard.Controllers
             {
                 if (id != null)
                 {
-                    var step = stepsRepo.GetStep((int)id);
+                    var step = await stepsRepo.GetStep((int)id);
                     if (step != null)
                     {
                         return View(step);
@@ -72,7 +72,8 @@ namespace VisionBoard.Controllers
             {
                 if (goalId == null)
                 {
-                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name");
+                    ViewData["CurrentGoalId"] = goalId;
+                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name");
                 }
                 else
                 {
@@ -98,10 +99,12 @@ namespace VisionBoard.Controllers
         // POST: Steps/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int? currentGoalId, [Bind("Id,Name,Description,Weight,DueDate,Status,GoalId")] Step step)
+        public async Task<IActionResult> Create(int? currentGoalId, [Bind("Id,Name,Description,Weight,DueDate,GoalId")] Step step)
         {
             try
             {
+                step.Status = false;
+
                 if (ModelState.IsValid)
                 {
                     await stepsRepo.AddStep(step);
@@ -113,6 +116,7 @@ namespace VisionBoard.Controllers
                     }
                     else
                     {
+                        ViewData["CurrentGoalId"] = currentGoalId;
                         steps = await stepsRepo.GetAllSteps((int)currentGoalId);
                     }
 
@@ -121,14 +125,15 @@ namespace VisionBoard.Controllers
 
                 if (currentGoalId == null)
                 {
-                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name");
+                    ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name");
                 }
                 else
                 {
                     IEnumerable<Goal> goal = new List<Goal>()
-                {
-                    await goalRepo.GetGoal((int)currentGoalId)
-                };
+                    {
+                        await goalRepo.GetGoal((int)currentGoalId)
+                    };
+                    ViewData["CurrentGoalId"] = currentGoalId;
                     ViewData["GoalId"] = new SelectList(goal, "Id", "Name");
                 }
 
@@ -153,7 +158,7 @@ namespace VisionBoard.Controllers
                     var step = await stepsRepo.GetStep((int)id);
                     if (step != null)
                     {
-                        ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name", step.GoalId);
+                        ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name", step.GoalId);
                         return View(step);
                     }
                 }
@@ -183,10 +188,10 @@ namespace VisionBoard.Controllers
                 if (ModelState.IsValid)
                 {
                     await stepsRepo.UpdateStep(step);
-                    var steps = await stepsRepo.GetAllSteps();
+                    var steps = await stepsRepo.GetAllSteps(step.GoalId);
                     return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "IndexSteps", steps) });
                 }
-                ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name", step.GoalId);
+                ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name", step.GoalId);
                 return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "Edit", step) });
             }
             catch (Exception ex)

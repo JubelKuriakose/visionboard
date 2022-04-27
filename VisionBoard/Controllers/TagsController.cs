@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using VisionBoard.DAL;
 using VisionBoard.Models;
 using VisionBoard.Utilis;
@@ -82,10 +81,13 @@ namespace VisionBoard.Controllers
         // POST: Tags/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string source, [Bind("Id,Name,Colour,Status")] Tag tag)
+        public async Task<IActionResult> Create(string source, [Bind("Id,Name,Colour")] Tag tag)
         {
             try
             {
+                //tag active or not
+                tag.Status = true;
+
                 if (ModelState.IsValid)
                 {
                     var newTag = await tagRepository.AddTag(tag);
@@ -142,7 +144,7 @@ namespace VisionBoard.Controllers
         // POST: Tags/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string source, [Bind("Id,Name,Colour,Status")] Tag tag)
+        public async Task<IActionResult> Edit(int id, string source, [Bind("Id,Name,Colour")] Tag tag)
         {
             try
             {
@@ -153,6 +155,7 @@ namespace VisionBoard.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    tag.Status = true;
                     var newTag = await tagRepository.UpdateTag(tag);
 
                     if (source == "DropDown")

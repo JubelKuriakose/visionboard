@@ -1,10 +1,15 @@
 ﻿
 @{
     Layout = null;
+    if (ViewBag.Source == null)
+    {
+        ViewBag.Source = Model;
+    }
 }
 
 <div>
-    <div id="main-cropper"> </div>
+    <input type="hidden" name="source" id="source" value="@ViewBag.Source" />
+    <div id="main-cropper"></div>
     <div class="row">
         <div class="col-md-12">
             <div class="image-upload">

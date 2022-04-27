@@ -71,7 +71,7 @@ namespace VisionBoard.Controllers
         {
             try
             {
-                ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoals(null), "Id", "Name");
+                ViewData["GoalId"] = new SelectList(await goalRepo.GetAllGoalsWithoutInnerObjects(), "Id", "Name");
                 ViewBag.Source = source;
                 return View();
             }
@@ -87,10 +87,12 @@ namespace VisionBoard.Controllers
         // POST: Rewards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string source, [Bind("Id,Name,Descrption,GoalId,PictureUrl,Status")] Reward reward)
+        public async Task<IActionResult> Create(string source, [Bind("Id,Name,Description,GoalId,PictureUrl")] Reward reward)
         {
             try
             {
+                //achieved reward or not
+                reward.Status = false;
                 if (ModelState.IsValid)
                 {
                     var newReward = await rewardsRepo.AddReward(reward);
@@ -147,7 +149,7 @@ namespace VisionBoard.Controllers
         // POST: Rewards/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string source, [Bind("Id,Name,Descrption,GoalId,PictureUrl,Status")] Reward reward)
+        public async Task<IActionResult> Edit(int id, string source, [Bind("Id,Name,Description,GoalId,PictureUrl,Status")] Reward reward)
         {
             try
             {

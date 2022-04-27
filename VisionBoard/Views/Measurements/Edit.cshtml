@@ -3,12 +3,16 @@
 @{
     ViewData["Title"] = "Edit";
     Layout = null;
+    if (Model.Goal != null)
+    {
+        ViewBag.GoalId = Model.Goal.Id;
+    }
 }
 
 <div class="row">
     <div class="col-md-12">
         <form asp-controller="Measurements" asp-action="Edit" asp-route-id="@Model.Id" onsubmit="return AddorEditMeasurement(this);">
-            @Html.Hidden("GoalId", Model.Goal.Id)
+            <input type="hidden" name="GoalId" value="@ViewBag.GoalId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="row">
@@ -39,7 +43,17 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="Unit" class="control-label"></label>
-                        <input asp-for="Unit" class="form-control" />
+                        <select id="select-unit" class="form-control" onchange='NewUnit(this.value);'>
+                            <option value="@Model.Unit">@Model.Unit</option>
+                            <option value="Inche">Inch</option>
+                            <option value="Meter">Meter</option>
+                            <option value="Kilometer">Kilometer</option>
+                            <option value="pound">pound</option>
+                            <option value="centimeter">centimeter</option>
+                            <option value="Kilogram">Kilogram</option>
+                            <option value="others">others</option>
+                        </select>
+                        <input asp-for="Unit" type="text" name="Unit" id="text-unit" class="form-control" style='display:none;' />
                         <span asp-validation-for="Unit" class="text-danger"></span>
                     </div>
                 </div>
