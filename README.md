@@ -81,6 +81,42 @@ alt="Remove Goals and assoiciated items Demo" width="560" height="300" border="1
 <br />
 <br />
 
+## Screen Shots
+<br />
+<img src="./Read Me Images/new goal.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/new goal crop.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/view goal.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/goal details.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/edit goal.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/view step.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/steps.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/edit step.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/delete goal.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/edit reward.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/edit tag.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/list tags.png" border="10" />
 
 
 
