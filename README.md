@@ -17,7 +17,7 @@ Asp.Net Core MVC framwork is used to build this project, Razor pages are used fo
 - View Rewards for the Goal
 - View Goal Tracking information (Measurement)
 	
-[View Goals and assoiciated details Demo ](https://www.youtube.com/watch?v=58e5zWKscVQ)
+#### [View Goals and assoiciated details Demo ](https://www.youtube.com/watch?v=58e5zWKscVQ)
 
 
 - Add new Goal
@@ -26,7 +26,7 @@ Asp.Net Core MVC framwork is used to build this project, Razor pages are used fo
 - Add Reward for the Goal 
 - Add Tags
 	
-[Add Goals and assoiciated items Demo ](https://www.youtube.com/watch?v=smzVsCbiGr8)
+#### [Add Goals and assoiciated items Demo ](https://www.youtube.com/watch?v=smzVsCbiGr8)
 	
 
 
@@ -36,7 +36,7 @@ Asp.Net Core MVC framwork is used to build this project, Razor pages are used fo
 - Edit Mesurement
 - Edit Tags
 
-[Edit Goals and assoiciated items Demo ](https://www.youtube.com/watch?v=U6wIFtUuL_E)
+#### [Edit Goals and assoiciated items Demo ](https://www.youtube.com/watch?v=U6wIFtUuL_E)
 
 
 - Reomve Goal
@@ -45,7 +45,11 @@ Asp.Net Core MVC framwork is used to build this project, Razor pages are used fo
 - Discard Tracking
 - Remove Tag
 
-[Remove Goals and assoiciated items Demo ](https://www.youtube.com/watch?v=jOgBWu1hw5o)
+#### [Remove Goals and assoiciated items Demo ](https://www.youtube.com/watch?v=jOgBWu1hw5o)
+
+<a href="https://www.youtube.com/watch?v=jOgBWu1hw5o?feature=player_embedded&v=YOUTUBE_VIDEO_ID_HERE
+" target="_blank"><img src="./image.png" 
+alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
 
 
