@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using VisionBoard.DAL;
+using VisionBoard.Models;
 
 namespace VisionBoard
 {
@@ -25,6 +23,15 @@ namespace VisionBoard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContextPool<GoalTrackerContext>(
+            options => options.UseSqlServer(Configuration.GetConnectionString("GoalTrackerConnection")));
+            services.AddScoped<IGoalRepository, GoalRepository>();
+            services.AddScoped<IMeasurementRepository, MeasurementRepository>();
+            services.AddScoped<IStepRepository, StepRepository>();
+            services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<IRewardRepository, RewardRepository>();
+            services.AddScoped<IErrorLogRepository, ErrorLogRepository>();
+
             var builder = services.AddControllersWithViews();
 
             if (Env.IsDevelopment())
@@ -58,7 +65,7 @@ namespace VisionBoard
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Goals}/{action=Index}/{id?}");
             });
         }
     }

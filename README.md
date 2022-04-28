@@ -1,78 +1,123 @@
-## Introduction
+# Vision Board
+Vision Board is a pet project that’s designed to make visualization, planning, tracking Goals and Tasks easy. 
+The concept of vision board is used to view the preview of all goals in a sigle page and categorization is achived through labels which can be associated with each goals.
+Each goals can optionally be split into smaller steps, the progress of the goal can also be tracked optionally. Finally there is an option to add Rewards for each goal to make the pursuit worth while.
 
-This is a simple pipeline example for a .NET Core application, showing just
-how easy it is to get up and running with .NET development using GitLab.
+# Technologies used
 
-# Reference links
+The project is buit using **.NET 5.0**, **EntityFrameworkCore 5.0.10**, **Microsoft Sql Server** is used for Data Base, **Jquery 3.5.1** and **Ajax** are used and 
+**Bootstrap v4.3.1**, **HTML 5**, **CSS 3** are used for the front end.
+**Asp.Net Core MVC framwork** is used to build this project, **Razor pages** are used for the views. **Entity Framework Core** used for the object-database mapping, the **DataBase first** approch is used for this project and it is configured using **Fluent API**. **Repository Pattern** is used for the abstraction of the Data Access Layer. Because the project is built DB first method a separate Database Project is used for the database. Image prossesing in this project is done using the nuget package SixLabors.ImageSharp  and the image cropping plugin croppie is also used in this project.
 
-- [GitLab CI Documentation](https://docs.gitlab.com/ee/ci/)
-- [.NET Hello World tutorial](https://dotnet.microsoft.com/learn/dotnet/hello-world-tutorial/)
+## Features
+<br />
 
-If you're new to .NET you'll want to check out the tutorial, but if you're
-already a seasoned developer considering building your own .NET app with GitLab,
-this should all look very familiar.
+<a href="https://www.youtube.com/watch?v=58e5zWKscVQ" target="_blank"><img src="./Read Me Images/view goal thumbnail.png" 
+alt="View Goals and assoiciated details Demo" width="560" height="300" border="10" /></a>
+<br />
+#### [View Goals and assoiciated details Demo ](https://www.youtube.com/watch?v=58e5zWKscVQ)
 
-## What's contained in this project
+- View Vision Board with tags based filtering
+- View goal details 
+- View Step deatis
+- View Rewards for the Goal
+- View Goal Tracking information (Measurement)	
 
-The root of the repository contains the out of the `dotnet new console` command,
-which generates a new console application that just prints out "Hello, World."
-It's a simple example, but great for demonstrating how easy GitLab CI is to
-use with .NET. Check out the `Program.cs` and `dotnetcore.csproj` files to
-see how these work.
+<hr />
+<br />
+<br />
+<br />
 
-In addition to the .NET Core content, there is a ready-to-go `.gitignore` file
-sourced from the the .NET Core [.gitignore](https://github.com/dotnet/core/blob/master/.gitignore). This
-will help keep your repository clean of build files and other configuration.
 
-Finally, the `.gitlab-ci.yml` contains the configuration needed for GitLab
-to build your code. Let's take a look, section by section.
+<a href="https://www.youtube.com/watch?v=smzVsCbiGr8" target="_blank"><img src="./Read Me Images/Create Goal thumbnail.png" 
+alt="Add Goals and assoiciated items Demo" width="560" height="300" border="10" /></a>
+<br />
+#### [Add Goals and assoiciated items Demo ](https://www.youtube.com/watch?v=smzVsCbiGr8)
 
-First, we note that we want to use the official Microsoft .NET SDK image
-to build our project.
+- Add new Goal
+- Add Steps of the Goal
+- Add Tracking
+- Add Reward for the Goal 
+- Add Tags
 
-```
-image: microsoft/dotnet:latest
-```
+<hr />
+<br />
+<br />
+<br />
+	
 
-We're defining two stages here: `build`, and `test`. As your project grows
-in complexity you can add more of these.
+	
+<a href="https://www.youtube.com/watch?v=U6wIFtUuL_E" target="_blank"><img src="./Read Me Images/Edit Goal thumbnail.png" 
+alt="Edit Goals and assoiciated items Demo" width="560" height="300" border="10" /></a>
+<br />
+#### [Edit Goals and assoiciated items Demo ](https://www.youtube.com/watch?v=U6wIFtUuL_E)
 
-```
-stages:
-    - build
-    - test
-```
+- Edit Goal
+- Edit Steps
+- Edit Reward
+- Edit Mesurement
+- Edit Tags
 
-Next, we define our build job which simply runs the `dotnet build` command and
-identifies the `bin` folder as the output directory. Anything in the `bin` folder
-will be automatically handed off to future stages, and is also downloadable through
-the web UI.
+<hr />
+<br />
+<br />
+<br />
 
-```
-build:
-    stage: build
-    script:
-        - "dotnet build"
-    artifacts:
-      paths:
-        - bin/
-```
 
-Similar to the build step, we get our test output simply by running `dotnet test`.
 
-```
-test:
-    stage: test
-    script: 
-        - "dotnet test"
-```
+<a href="https://www.youtube.com/watch?v=jOgBWu1hw5o" target="_blank"><img src="./Read Me Images/Edit Goal thumbnail.png" 
+alt="Remove Goals and assoiciated items Demo" width="560" height="300" border="10" /></a>
+<br />
+#### [Remove Goals and assoiciated items Demo ](https://www.youtube.com/watch?v=jOgBWu1hw5o)
 
-This should be enough to get you started. There are many, many powerful options 
-for your `.gitlab-ci.yml`. You can read about them in our documentation 
-[here](https://docs.gitlab.com/ee/ci/yaml/).
+- Reomve Goal
+- Remove Step
+- Remove Reward
+- Discard Tracking
+- Remove Tag
 
-## Developing with Gitpod
+<hr />
+<br />
+<br />
+<br />
 
-This template repository also has a fully-automated dev setup for [Gitpod](https://docs.gitlab.com/ee/integration/gitpod.html).
+## Screen Shots
+<br />
+<img src="./Read Me Images/new goal.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/new goal crop.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/view goal.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/goal details.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/edit goal.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/view step.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/steps.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/edit step.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/delete goal.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/edit reward.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/edit tag.png" border="10" />
+<br />
+<br />
+<img src="./Read Me Images/list tags.png" border="10" />
 
-The `.gitpod.yml` ensures that, when you open this repository in Gitpod, you'll get a cloud workspace with .NET Core pre-installed, and your project will automatically be built and start running.
+
+
+

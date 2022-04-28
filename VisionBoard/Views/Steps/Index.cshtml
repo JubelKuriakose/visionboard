@@ -1,0 +1,14 @@
+﻿@model IEnumerable<VisionBoard.Models.Step>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="mt-4">
+    <h2>Steps</h2>
+    <div class="mt-4">
+        <div id="list-steps" class="steps-table">
+            @await Html.PartialAsync("IndexSteps", Model)
+        </div>
+    </div>    
+</div>
+

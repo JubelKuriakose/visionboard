@@ -1,0 +1,61 @@
+﻿@model VisionBoard.Models.Reward
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = null;
+}
+
+<div class="row">    
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <div id="crop-reward-image" style="display:none">
+                @await Html.PartialAsync("~/Views/Media/CustomCrop.cshtml", "RewardImage")
+            </div>
+        </div>
+    </div>
+    <form asp-controller="Rewards" asp-action="Create" onsubmit="return AddorEditReward(this);">
+        <input type="hidden" name="source" id="source" value="@ViewBag.Source" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <div class="reward-img">
+                    <img src="~/images/reward_noimage.png" asp-append-version="true" id="reward-img">
+                    <input type="hidden" id="reward-picture-url" name="PictureUrl" value="reward_noimage.png" />
+                    <a onclick="ShowCustomCrop()" class="reward-img-edit"><i class="fa-solid fa-lg fa-pen-to-square text-warning"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" rows="3" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

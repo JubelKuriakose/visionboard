@@ -1,0 +1,40 @@
+﻿@model IEnumerable<VisionBoard.Models.Tag>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th width="40%">
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th width="10%">
+                @Html.DisplayNameFor(model => model.Colour)
+            </th>
+            <th width="30%" >
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th width="20%">
+                <a onclick="showInPopup('@Url.Action("Create","Tags", null, Context.Request.Scheme)','Add Tag')" class="btn btn-success text-white"> Add Tag</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <span class="badge p-2" style="background-color:@item.Colour"> @item.Name</span>
+                </td>
+                <td>
+                    @Html.Label("Status", item.Status ? "Completed" : "Pending")
+                </td>
+                <td>
+                    <a onclick="showInPopup('@Url.Action("Edit","Tags",new { id = @item.Id },Context.Request.Scheme)','Edit Tag')"><i class="fa-solid fa-pen-to-square text-warning"></i></a>                    
+                    <a onclick="showInPopup('@Url.Action("Delete","Tags", new { id = @item.Id }, Context.Request.Scheme)','Delete Tag')"><i class="fa-solid fa-trash-can text-danger pl-3"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

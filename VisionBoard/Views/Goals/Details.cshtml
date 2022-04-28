@@ -1,0 +1,123 @@
+﻿@model VisionBoard.Models.Goal
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@Html.Hidden("GoalId", Model.Id)
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-sm-8">
+                <h3>@Model.Name</h3>
+            </div>
+            <div class="col-sm-4">
+                <div>
+                    @foreach (GoalTags goaltag in Model.GoalTags)
+                    {
+                        <span class="badge" style="padding:5px;background-color: @goaltag.Tag.Colour">
+                            @goaltag.Tag.Name
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-8">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="label font-weight-bold">Description : </span>
+                            <span>@Model.Description </span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <span class="label font-weight-bold">Started On : </span>
+                            <span>@Model.StartOn.Date.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="label font-weight-bold">Due On : </span>
+                            <span>@Model.EndingOn.Value.Date.ToString("dd/MM/yyyy")</span>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-md-12">
+                            <span class="label font-weight-bold">Importance : </span>
+                            @{
+                                for (int i = 0; i < 5; i++)
+                                {
+                                    if (i < @Model.Magnitude)
+                                    {
+                                        <span class="fa fa-circle text-warning"></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="fa fa-circle"></span>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-md-12">
+                            <span class="label font-weight-bold">Status : </span>
+                            <span>@(Model.Status==true?"Completed":"Pending")</span>
+                        </div>
+                    </div>
+                    @{
+                        if (Model.Reward != null)
+                        {
+                            <div class="row p-2">
+                                <div class="col-md-12">
+                                    <span class="label font-weight-bold">Reward : </span>
+                                    <span>@Model.Reward.Name</span>
+                                </div>
+                            </div>
+
+                        }
+                    }
+                    <div class="row p-2">
+                        <div class="col-md-12">
+                            <span class="label font-weight-bold">Track Progress : </span>
+                            <label class="radio-inline pl-2">
+                                <input type="radio" name="TrackProgress" @(Model.Measurement != null ? "Checked" : "") value="Yes">Yes
+                            </label>
+                            <label class="radio-inline pl-2">
+                                <input type="radio" name="TrackProgress" value="No" @(Model.Measurement == null ? "Checked" : "")>No
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="show-progress" class="show-measurement">
+                                @if (Model.Measurement != null)
+                                {
+                                    @await Html.PartialAsync("~/Views/Measurements/Details.cshtml", Model.Measurement)
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div>
+                    <img src=@("~/images/" + (Model.PictureUrl ?? "noimage.png")) asp-append-version="true" class="goal-img">
+                </div>
+            </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-sm-12">
+                <div id="steps-table" class="steps-table">
+                    @await Html.PartialAsync("~/Views/Steps/IndexSteps.cshtml", Model.Steps, new ViewDataDictionary(ViewData) { { "goalId", Model.Id } })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.Id">Edit</a> |
+    <a onclick="showInPopup('@Url.Action("Delete","Goals", new { id = Model.Id }, Context.Request.Scheme)','Delete Goal')" class="btn btn-danger">Delete</a>
+</div>

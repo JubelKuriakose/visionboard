@@ -1,0 +1,17 @@
+﻿@model IEnumerable<VisionBoard.Models.Tag>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="mt-4">
+    <h2>Tags</h2>
+    <div class="row mt-4">
+        <div class="col-10">
+            <div id="list-tags" class="tags-table">
+
+                @await Html.PartialAsync("IndexTags", Model)
+            </div>
+        </div>
+    </div>    
+</div>

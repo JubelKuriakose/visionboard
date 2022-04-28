@@ -1,0 +1,47 @@
+﻿@model VisionBoard.Models.Reward
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = null;
+}
+
+
+<h3>Are you sure you want to delete this?</h3>
+<div class="row m-4">
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="col-md-8 p-3">
+                        <div>
+                            <img src=@("~/images/" + (Model.PictureUrl ?? "reward_noimage.png")) asp-append-version="true" class="goal-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <span class="label font-weight-bold">Name : </span>
+                    <span>@Model.Name </span>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <span class="label font-weight-bold">Goal : </span>
+                    <span>@(Model.Goal==null?"":Model.Goal.Name)</span>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <span class="label font-weight-bold">Status : </span>
+                    <span>@(Model.Status==true?"Completed":"Pending")</span>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-sm-12">
+                    <a class="btn btn-danger" onclick="DeleteReward('@Url.Action("Delete", "Rewards", new { id=@Model.Id, source=@ViewBag.Source})')">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,71 @@
+﻿@model VisionBoard.Models.Measurement
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = null;
+    if (Model.Goal != null)
+    {
+        ViewBag.GoalId = Model.Goal.Id;
+    }
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-controller="Measurements" asp-action="Edit" asp-route-id="@Model.Id" onsubmit="return AddorEditMeasurement(this);">
+            <input type="hidden" name="GoalId" value="@ViewBag.GoalId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Type" class="control-label"></label><br />
+                        <input type="radio" asp-for="Type" value="By Value" />By Value &nbsp;&nbsp;
+                        <input type="radio" asp-for="Type" value="By Steps" />By Steps<br />
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="CurrentValue" class="control-label"></label>
+                        <input asp-for="CurrentValue" class="form-control" />
+                        <span asp-validation-for="CurrentValue" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="TotalValue" class="control-label"></label>
+                        <input asp-for="TotalValue" class="form-control" />
+                        <span asp-validation-for="TotalValue" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Unit" class="control-label"></label>
+                        <select id="select-unit" class="form-control" onchange='NewUnit(this.value);'>
+                            <option value="@Model.Unit">@Model.Unit</option>
+                            <option value="Inche">Inch</option>
+                            <option value="Meter">Meter</option>
+                            <option value="Kilometer">Kilometer</option>
+                            <option value="pound">pound</option>
+                            <option value="centimeter">centimeter</option>
+                            <option value="Kilogram">Kilogram</option>
+                            <option value="others">others</option>
+                        </select>
+                        <input asp-for="Unit" type="text" name="Unit" id="text-unit" class="form-control" style='display:none;' />
+                        <span asp-validation-for="Unit" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
