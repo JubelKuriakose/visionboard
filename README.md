@@ -7,7 +7,7 @@ Each goals can optionally be split into smaller steps, the progress of the goal 
 
 The project is buit using **.NET 5.0**, **EntityFrameworkCore 5.0.10**, **Microsoft Sql Server** is used for Data Base, **Jquery 3.5.1** and **Ajax** are used and 
 **Bootstrap v4.3.1**, **HTML 5**, **CSS 3** are used for the front end.
-**Asp.Net Core MVC framwork** is used to build this project, **Razor pages** are used for the views. **Entity Framework Core** used for the object-database mapping, the **DataBase first** approch is used for this project and it is configured using **Fluent API**. **Repository Pattern** is used for the abstraction of the Data Access Layer. Because the project is built DB first method a separate Database Project is used for the database. Image prossesing in this project is done using the nuget package SixLabors.ImageSharp  and the image cropping plugin croppie is also used in this project.
+**Asp.Net Core MVC framwork** is used to build this project. **Entity Framework Core** used for the object-database mapping, the **DataBase first** approch is used for this project and it is configured using **Fluent API**. **Repository Pattern** is used for the abstraction of the Data Access Layer. Because the project is built DB first method a separate Database Project is used for the database. Image prossesing in this project is done using the nuget package SixLabors.ImageSharp  and the image cropping plugin croppie is also used in this project.
 
 ## Features
 <br />
